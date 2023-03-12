@@ -6,7 +6,11 @@
   "scripts": {
     "build": "rimraf ./build && npx tsc",
     "dev": "npx nodemon  -e js,ts --watch src ./src/index.ts",
-    "start": "npm run build && node build/index.js"
+    "start": "npm run build && node build/index.js",
+    "lint": "eslint ./ --ext ts",
+    "lint:fix": "eslint --fix --ext .ts .",
+    "prettier": "prettier --check src/**/*.ts --check test/**/*.test.ts",
+    "prettier:fix": "prettier --check src/**/*.ts --check test/**/*.test.ts --write"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +18,22 @@
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@types/node": "^18.15.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-import": "^2.27.5",
     "nodemon": "^2.0.21",
+    "prettier": "^2.8.4",
     "rimraf": "^4.4.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "semi": true
   }
 }
