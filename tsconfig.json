@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
     "outDir": "build"
   },
-  "extends": "@tsconfig/node16/tsconfig.json"
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "exclude": ["tests", "jest.config.ts"]
 }
