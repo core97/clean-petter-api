@@ -4,4 +4,5 @@
   },
   "extends": "@tsconfig/node16/tsconfig.json",
   "exclude": ["jest.config.ts"],
+  "include": ["./src/app/**/*"]
 }

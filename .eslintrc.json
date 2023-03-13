@@ -10,8 +10,24 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
+  "overrides": [
+		{
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.tests.json"]
+      }
+    }
+	],
   "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["jest.config.ts", "build"],
   "rules": {
+    "import/prefer-default-export": "off",
     "react/jsx-filename-extension": "off"
   }
 }
