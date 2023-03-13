@@ -3,5 +3,5 @@
     "outDir": "build"
   },
   "extends": "@tsconfig/node16/tsconfig.json",
-  "exclude": ["tests", "jest.config.ts"]
+  "exclude": ["jest.config.ts"],
 }
