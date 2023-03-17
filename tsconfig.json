@@ -2,7 +2,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
+      "@breed/*": ["./app/breed/*"],
+      "@pet-ad/*": ["./app/pet-ad/*"],
       "@shared/*": ["./app/shared/*"],
+      "@user/*": ["./app/user/*"],
     },
     "outDir": "build"
   },
