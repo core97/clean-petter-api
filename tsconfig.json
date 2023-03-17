@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["./app/shared/*"],
+    },
     "outDir": "build"
   },
   "extends": "@tsconfig/node16/tsconfig.json",
