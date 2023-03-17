@@ -2,10 +2,10 @@
   "name": "hexagonal-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app/index.ts",
   "scripts": {
     "build": "rimraf ./build && npx tsc -p tsconfig.json",
-    "dev": "cross-env NODE_ENV=development npx nodemon  -e js,ts --watch src ./src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon",
     "start": "cross-env NODE_ENV=production npm run build && node build/index.js",
     "test": "cross-env NODE_ENV=test jest",
     "lint": "eslint ./src --ext ts",
@@ -52,5 +52,18 @@
   },
   "lint-staged": {
     "*.(js|ts)": "npm run lint"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/app/index.ts",
+    "ext": "ts, js"
   }
 }
