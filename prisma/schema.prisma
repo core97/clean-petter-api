@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Breed {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      BreedName
+  createdAt DateTime  @default(now())
+  petAds    PetAd[]   @relation(fields: [petAdsId], references: [id])
+  petAdsId  String[]  @db.ObjectId
+  petType   PetType
+}
+
+model PetAd {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  address   Address
+  breeds    Breed[]  @relation(fields: [breedIds], references: [id])
+  breedIds  String[] @db.ObjectId
+  createdAt DateTime @default(now())
+  name      String
+  petType   PetType
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  email     String   @unique
+  name      String
+  petAds    PetAd[]
+  password  String
+  address   Address?
+}
+
+type Address {
+  city  String
+  state String
+}
+
+enum PetType {
+  CAT
+  DOG
+}
+
+enum BreedName {
+  PITBULL
+}
