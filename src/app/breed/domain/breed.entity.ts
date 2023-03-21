@@ -7,9 +7,8 @@ export class Breed {
   constructor(
     public props: Entity & {
       name: BreedName;
-      petAdIds: string[];
+      petAds: PetAd[];
       petType: PetType;
-      petAds?: PetAd[];
     }
   ) {
     Object.assign(this, props);
