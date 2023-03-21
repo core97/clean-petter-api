@@ -1,13 +1,16 @@
 import { User } from '@user/domain/user.entity';
 
 export interface UserRepository {
-  create(user: Omit<User['props'], 'address' | 'petAds'>): Promise<User>;
-  
-  deleteByEmail(email: User['props']['email']): Promise<void>;
+  create(
+    user: Pick<User['props'], 'email' | 'name' | 'password'> &
+      Partial<Pick<User['props'], 'createdAt' | 'id'>>
+  ): Promise<User>;
 
-  findByEmail(email: User['props']['email']): Promise<User>;
+  deleteOneByEmail(email: User['props']['email']): Promise<void>;
 
-  updateByEmail(
+  findOneByEmail(email: User['props']['email']): Promise<User>;
+
+  updateOneByEmail(
     user: Pick<User['props'], 'email'> &
       Partial<Omit<User['props'], 'petAds' | 'email'>>
   ): Promise<User>;

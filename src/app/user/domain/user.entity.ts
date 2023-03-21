@@ -14,4 +14,21 @@ export class User {
   ) {
     Object.assign(this, props);
   }
+
+  static isValidEmail(email: unknown) {
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    return typeof email === 'string' && emailRegex.test(email);
+  }
+
+  static isValidPassword(password: unknown) {
+    /**
+     * - minimum length of 8 characters
+     * - at least one special character
+     * - at least one capital letter
+     * - at least one number
+     */
+    const passwordRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+    return typeof password === 'string' && passwordRegex.test(password);
+  }
 }

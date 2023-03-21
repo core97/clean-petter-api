@@ -42,14 +42,18 @@ model User {
 
 type Address {
   city  String
-  state String
+  country CountryIso
+}
+
+enum BreedName {
+  PITBULL
+}
+
+enum CountryIso {
+  ES
 }
 
 enum PetType {
   CAT
   DOG
-}
-
-enum BreedName {
-  PITBULL
 }
