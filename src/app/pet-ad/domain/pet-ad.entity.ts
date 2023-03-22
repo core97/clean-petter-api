@@ -1,7 +1,6 @@
 import { Breed } from '@breed/domain/breed.entity';
 import { User } from '@user/domain/user.entity';
 import { Address } from '@shared/domain/address.value-object';
-import { PetType } from '@shared/domain/enums/pet-type.enum';
 import { Entity } from '@shared/domain//types/entity';
 
 export class PetAd {
@@ -10,7 +9,6 @@ export class PetAd {
       address: Address;
       breeds: Breed[];
       name: string;
-      petType: PetType;
       user: User;
     }
   ) {
