@@ -1,6 +1,6 @@
 import { UserRepository } from '@user/domain/user.repository';
 
-export class UserFinderByEmail {
+export class UserFinderOneByEmail {
   constructor(private userRepo: UserRepository) {}
 
   async run(email: Parameters<UserRepository['findOneByEmail']>[0]) {
