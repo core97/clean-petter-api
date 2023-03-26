@@ -1,4 +1,4 @@
-import { CountryIso } from '@shared/domain/enums/country.enum';
+import { CountryIso } from '@shared/domain/types/country';
 
 export class Address {
   constructor(

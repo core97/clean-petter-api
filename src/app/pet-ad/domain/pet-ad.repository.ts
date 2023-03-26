@@ -1,16 +1,13 @@
 import { PetAd } from '@pet-ad/domain/pet-ad.entity';
 import { User } from '@user/domain/user.entity';
-import { CatBreed, DogBreed } from '@breed/domain/enums/breed-name.enum';
-import { CountryIso } from '@shared/domain/enums/country.enum';
+import { CountryIso } from '@shared/domain/types/country';
 import {
   PaginationParams,
   PaginationResult,
 } from '@shared/domain/types/pagination';
 
 export interface PetAdRepository {
-  create(
-    petAd: Omit<PetAd['props'], 'breeds'> & { breeds: CatBreed[] | DogBreed[] }
-  ): Promise<PetAd>;
+  create(petAd: PetAd['props']): Promise<PetAd>;
 
   deleteOneById(id: PetAd['props']['id']): Promise<void>;
 
@@ -18,14 +15,13 @@ export interface PetAdRepository {
 
   findByFilters(
     filters: PaginationParams & { country: CountryIso } & Partial<
-        Pick<PetAd['props'], 'breeds'>
+        Pick<PetAd['props'], 'breedIds'>
       >
   ): Promise<PaginationResult<PetAd>>;
 
-  findByUser(params: Pick<User['props'], 'id'>): Promise<PetAd[]>;
+  findByUser(userId: User['props']['id']): Promise<PetAd[]>;
 
   updateOneById(
-    petAd: Pick<PetAd['props'], 'id'> &
-      Partial<Omit<PetAd['props'], 'breeds'> & { breeds: CatBreed[] | DogBreed[] }>
+    petAd: Pick<PetAd['props'], 'id'> & Partial<PetAd['props']>
   ): Promise<PetAd>;
 }

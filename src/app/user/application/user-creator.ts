@@ -3,10 +3,13 @@ import { UserValidator } from '@user/application/user-validator';
 import { StringUtils } from '@shared/application/string-utils';
 
 export class UserCreator {
-  constructor(private userRepo: UserRepository) {}
+  constructor(
+    private userRepo: UserRepository,
+    private userValidator: UserValidator
+  ) {}
 
   async run(user: Parameters<UserRepository['create']>[0]) {
-    UserValidator.validate(user);
+    this.userValidator.validate(user);
 
     // TODO: encrypt password
     const userCreated = await this.userRepo.create({

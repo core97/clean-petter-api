@@ -8,11 +8,12 @@ datasource db {
 }
 
 model Breed {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      BreedName @unique
-  createdAt DateTime  @default(now())
-  petAds    PetAd[]   @relation(fields: [petAdsId], references: [id])
-  petAdsId  String[]  @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  createdAt DateTime @default(now())
+  petAds    PetAd[]  @relation(fields: [petAdsId], references: [id])
+  petAdsId  String[] @db.ObjectId
+  petType   PetType
 }
 
 model PetAd {
@@ -39,16 +40,6 @@ model User {
 type Address {
   city    String
   country CountryIso
-}
-
-enum BreedName {
-  // CATS
-  BENGAL_CAT
-
-  // DOGS
-  GERMAN_SHEPHERD
-  LABRADOR_RETRIEVER
-  PITBULL
 }
 
 enum CountryIso {

@@ -3,10 +3,13 @@ import { UserRepository } from '@user/domain/user.repository';
 import { StringUtils } from '@shared/application/string-utils';
 
 export class UserUpdaterOneByEmail {
-  constructor(private userRepo: UserRepository) {}
+  constructor(
+    private userRepo: UserRepository,
+    private userValidator: UserValidator
+  ) {}
 
   async run(user: Parameters<UserRepository['updateOneByEmail']>[0]) {
-    UserValidator.validate(user);
+    this.userValidator.validate(user);
 
     // TODO: if password exists and is different, encrypt it
     const updatedUser = await this.userRepo.updateOneByEmail({

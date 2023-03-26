@@ -28,6 +28,7 @@
   "ignorePatterns": ["jest.config.ts", "build"],
   "rules": {
     "import/prefer-default-export": "off",
-    "react/jsx-filename-extension": "off"
+    "react/jsx-filename-extension": "off",
+    "class-methods-use-this": "off"
   }
 }

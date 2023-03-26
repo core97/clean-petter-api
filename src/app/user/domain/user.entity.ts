@@ -1,4 +1,3 @@
-import { PetAd } from '@pet-ad/domain/pet-ad.entity';
 import { Address } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain//types/entity';
 
@@ -7,12 +6,19 @@ export class User {
     public props: Entity & {
       email: string;
       name: string;
-      petAds: PetAd[];
       password: string;
       address?: Address;
     }
   ) {
     Object.assign(this, props);
+  }
+
+  static instantiate(
+    petAd: Omit<User['props'], 'address'> & {
+      address: Address['props'];
+    }
+  ) {
+    return new User({ ...petAd, address: new Address(petAd.address) });
   }
 
   static isValidEmail(email: unknown) {

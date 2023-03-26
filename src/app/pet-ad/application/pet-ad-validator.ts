@@ -1,26 +1,28 @@
 import { PetAd } from '@pet-ad/domain/pet-ad.entity';
-import { CatBreed, DogBreed } from '@breed/domain/enums/breed-name.enum';
+import { BreedRepository } from '@breed/domain/breed.repository';
 
 export class PetAdValidator {
-  static validate(petAd: Partial<PetAd['props']>) {
-    if (petAd.breeds) {
-      if (!petAd.breeds?.length) {
+  constructor(private breedRepo: BreedRepository) {}
+
+  async validate(petAd: Partial<PetAd['props']>) {
+    if (petAd.breedIds) {
+      if (!petAd.breedIds?.length) {
         throw Error('breeds is empty');
       }
 
-      if (petAd.breeds.length > 2) {
+      if (petAd.breedIds.length > 2) {
         throw Error('may not have more than two breeds');
       }
 
-      const hasCatBreed = petAd.breeds?.some(breed =>
-        (Object.values(CatBreed) as string[]).includes(breed.props.name)
+      const breeds = await Promise.all(
+        petAd.breedIds.map(this.breedRepo.findOneById)
       );
 
-      const hasDogBreed = petAd.breeds?.some(breed =>
-        (Object.values(DogBreed) as string[]).includes(breed.props.name)
-      );
+      const hasCatBreeds = breeds.some(breed => breed?.props.petType === 'CAT');
 
-      if (hasCatBreed && hasDogBreed) {
+      const hasDogBreeds = breeds.some(breed => breed?.props.petType === 'DOG');
+
+      if (hasCatBreeds && hasDogBreeds) {
         throw Error('ad has breeds of different pets');
       }
     }

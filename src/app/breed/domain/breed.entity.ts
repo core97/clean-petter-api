@@ -1,14 +1,18 @@
-import { PetAd } from '@pet-ad/domain/pet-ad.entity';
-import { CatBreed, DogBreed } from '@breed/domain/enums/breed-name.enum';
-import { Entity } from '@shared/domain//types/entity';
+import { Entity } from '@shared/domain/types/entity';
+import { PetType } from '@shared/domain/types/pet-type';
 
 export class Breed {
   constructor(
     public props: Entity & {
-      name: CatBreed | DogBreed;
-      petAds?: PetAd[];
+      name: string;
+      petType: PetType;
+      petAdsId: string[];
     }
   ) {
     Object.assign(this, props);
+  }
+
+  static instantiate(breed: Breed['props']) {
+    return new Breed(breed);
   }
 }

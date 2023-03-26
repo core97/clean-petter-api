@@ -1,9 +1,0 @@
-export enum DogBreed {
-  GERMAN_SHEPHERD = 'GERMAN_SHEPHERD',
-  LABRADOR_RETRIEVER = 'LABRADOR_RETRIEVER',
-  PITBULL = 'PITBULL',
-}
-
-export enum CatBreed {
-  BENGAL_CAT = 'BENGAL_CAT',
-}

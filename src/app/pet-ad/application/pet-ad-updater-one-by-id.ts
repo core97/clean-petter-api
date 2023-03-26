@@ -1,27 +1,17 @@
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 import { PetAdValidator } from '@pet-ad/application/pet-ad-validator';
-import { Breed } from '@breed/domain/breed.entity';
-import { BreedRepository } from '@breed/domain/breed.repository';
 
 export class PetAdUpdaterOneById {
   constructor(
     private petAdRepo: PetAdRepository,
-    private breedRepo: BreedRepository
+    private petAdValidator: PetAdValidator,
   ) {}
 
   async run(petAd: Parameters<PetAdRepository['updateOneById']>[0]) {
-    let breeds: Breed[] = [];
+    await this.petAdValidator.validate(petAd);
 
-    if (petAd.breeds) {
-      breeds = await Promise.all(
-        petAd.breeds.map(this.breedRepo.findOneByName)
-      );
-    }
+    const updatedPetAd = await this.petAdRepo.updateOneById(petAd);
 
-    PetAdValidator.validate({ ...petAd, breeds });
-
-    const petAdCreated = await this.petAdRepo.updateOneById(petAd);
-
-    return petAdCreated;
+    return updatedPetAd;
   }
 }

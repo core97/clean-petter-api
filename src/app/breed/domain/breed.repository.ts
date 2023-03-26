@@ -1,6 +1,5 @@
 import { Breed } from '@breed/domain/breed.entity';
-import { CatBreed, DogBreed } from '@breed/domain/enums/breed-name.enum';
-import { PetType } from '@shared/domain/enums/pet-type.enum';
+import { PetType } from '@shared/domain/types/pet-type';
 
 export interface BreedRepository {
   create(breed: Omit<Breed['props'], 'petAds'>): Promise<Breed>;
@@ -9,7 +8,9 @@ export interface BreedRepository {
 
   findByPetType(petType: PetType): Promise<Breed[]>;
 
-  findOneByName(name: CatBreed | DogBreed): Promise<Breed>;
+  findOneByName(name: string): Promise<Breed | null>;
+
+  findOneById(breedId: string): Promise<Breed | null>;
 
   updateOneById(
     breed: Pick<Breed['props'], 'id'> & Partial<Omit<Breed['props'], 'petAds'>>
