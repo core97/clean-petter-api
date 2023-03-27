@@ -13,7 +13,7 @@ export interface PetAdRepository {
 
   deleteByUser(userId: User['props']['id']): Promise<void>;
 
-  findByFilters(
+  findByCountry(
     filters: PaginationParams & { country: CountryIso } & Partial<
         Pick<PetAd['props'], 'breedIds'>
       >
