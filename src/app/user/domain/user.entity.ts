@@ -1,5 +1,5 @@
 import { Address } from '@shared/domain/address.value-object';
-import { Entity } from '@shared/domain//types/entity';
+import { Entity } from '@shared/domain/types/entity';
 
 export class User {
   constructor(
@@ -14,11 +14,14 @@ export class User {
   }
 
   static instantiate(
-    petAd: Omit<User['props'], 'address'> & {
-      address: Address['props'];
+    user: Omit<User['props'], 'address'> & {
+      address?: Address['props'] | null;
     }
   ) {
-    return new User({ ...petAd, address: new Address(petAd.address) });
+    return new User({
+      ...user,
+      address: user.address ? new Address(user.address) : undefined,
+    });
   }
 
   static isValidEmail(email: unknown) {
