@@ -1,7 +1,7 @@
 import { UserRepository } from '@user/domain/user.repository';
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 
-export class UserDeleterOneByEmail {
+export class UserAccountDeleter {
   constructor(
     private userRepo: UserRepository,
     private petAdRepo: PetAdRepository

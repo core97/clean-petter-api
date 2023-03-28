@@ -11,6 +11,6 @@ export interface UserRepository {
 
   updateOneByEmail(
     user: Pick<User['props'], 'email'> &
-      Partial<Omit<User['props'], 'petAds' | 'email'>>
+      Partial<Pick<User['props'], 'address' | 'name' | 'password'>>
   ): Promise<User>;
 }

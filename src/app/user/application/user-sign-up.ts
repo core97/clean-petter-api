@@ -2,7 +2,7 @@ import { UserRepository } from '@user/domain/user.repository';
 import { UserValidator } from '@user/application/user-validator';
 import { StringUtils } from '@shared/application/string-utils';
 
-export class UserCreator {
+export class UserSignUp {
   constructor(
     private userRepo: UserRepository,
     private userValidator: UserValidator

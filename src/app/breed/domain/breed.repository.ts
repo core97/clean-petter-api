@@ -8,9 +8,9 @@ export interface BreedRepository {
 
   findByPetType(petType: PetType): Promise<Breed[]>;
 
-  findOneByName(name: string): Promise<Breed | null>;
+  findOneByName(name: string): Promise<Breed>;
 
-  findOneById(breedId: string): Promise<Breed | null>;
+  findOneById(breedId: string): Promise<Breed>;
 
   updateOneById(
     breed: Pick<Breed['props'], 'id'> & Partial<Omit<Breed['props'], 'petAds'>>
