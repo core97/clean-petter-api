@@ -9,4 +9,8 @@ export class StringUtils {
       .map(word => StringUtils.capitalize(word))
       .join(' ');
   }
+
+  static toCamelCase(str: string) {
+    return str.replace(/[-_.]\w/g, match => match.charAt(1).toUpperCase());
+  }
 }

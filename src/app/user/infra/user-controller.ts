@@ -7,8 +7,6 @@ import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
 
 export default class UserController {
-  private NAME = 'JUAN';
-
   private userAccountDeleter: UserAccountDeleter;
 
   private userFinderOneByEmail: UserFinderOneByEmail;
@@ -76,12 +74,7 @@ export default class UserController {
     req: { body: { email: string; password: string; name: string } },
     response?: Response
   ) {
-    console.log('*** UserController ***');
-    console.log(this);
-
     const { token, user } = await this.userSignUp.run(req.body);
-
-    console.log({ token, user });
 
     response?.cookie('auth-token', token, {
       path: '/',
