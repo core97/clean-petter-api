@@ -1,17 +1,24 @@
 import { UserRepository } from '@user/domain/user.repository';
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 
-export class UserAccountDeleter {
-  constructor(
-    private userRepo: UserRepository,
-    private petAdRepo: PetAdRepository
-  ) {}
+export default class UserAccountDeleter {
+  private userRepository: UserRepository;
+
+  private petAdRepository: PetAdRepository;
+
+  constructor(dependencies: {
+    userRepository: UserRepository;
+    petAdRepository: PetAdRepository;
+  }) {
+    this.userRepository = dependencies.userRepository;
+    this.petAdRepository = dependencies.petAdRepository;
+  }
 
   async run(email: Parameters<UserRepository['deleteOneByEmail']>[0]) {
-    const user = await this.userRepo.findOneByEmail(email);
+    const user = await this.userRepository.findOneByEmail(email);
 
-    await this.petAdRepo.deleteByUser(user.props.id);
+    await this.petAdRepository.deleteByUser(user.props.id);
 
-    await this.userRepo.deleteOneByEmail(email);
+    await this.userRepository.deleteOneByEmail(email);
   }
 }

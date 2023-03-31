@@ -1,8 +1,12 @@
 import { PetAd } from '@pet-ad/domain/pet-ad.entity';
 import { BreedRepository } from '@breed/domain/breed.repository';
 
-export class PetAdValidator {
-  constructor(private breedRepo: BreedRepository) {}
+export default class PetAdValidator {
+  private breedRepository: BreedRepository;
+
+  constructor(dependencies: { breedRepository: BreedRepository }) {
+    this.breedRepository = dependencies.breedRepository;
+  }
 
   async validate(petAd: Partial<PetAd['props']>) {
     if (petAd.breedIds) {
@@ -15,7 +19,7 @@ export class PetAdValidator {
       }
 
       const breeds = await Promise.all(
-        petAd.breedIds.map(this.breedRepo.findOneById)
+        petAd.breedIds.map(this.breedRepository.findOneById)
       );
 
       const hasCatBreeds = breeds.some(breed => breed?.props.petType === 'CAT');

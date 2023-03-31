@@ -1,38 +1,45 @@
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
-import { PetAdValidator } from '@pet-ad/application/pet-ad-validator';
+import PetAdValidator from '@pet-ad/application/pet-ad-validator';
 
-export class PetAdService {
-  constructor(
-    private petAdRepo: PetAdRepository,
-    private petAdValidator: PetAdValidator
-  ) {}
+export default class PetAdService {
+  private petAdRepository: PetAdRepository;
+
+  private petAdValidator: PetAdValidator;
+
+  constructor(dependencies: {
+    petAdRepository: PetAdRepository;
+    petAdValidator: PetAdValidator;
+  }) {
+    this.petAdRepository = dependencies.petAdRepository;
+    this.petAdValidator = dependencies.petAdValidator;
+  }
 
   async create(petAd: Parameters<PetAdRepository['create']>[0]) {
     await this.petAdValidator.validate(petAd);
 
-    const petAdCreated = await this.petAdRepo.create(petAd);
+    const petAdCreated = await this.petAdRepository.create(petAd);
 
     return petAdCreated;
   }
 
   async deleteByUser(userId: Parameters<PetAdRepository['deleteByUser']>[0]) {
-    await this.petAdRepo.deleteByUser(userId);
+    await this.petAdRepository.deleteByUser(userId);
   }
 
   async deleteOneById(
     petAdId: Parameters<PetAdRepository['deleteOneById']>[0]
   ) {
-    await this.petAdRepo.deleteOneById(petAdId);
+    await this.petAdRepository.deleteOneById(petAdId);
   }
 
   async getByCountry(filters: Parameters<PetAdRepository['findByCountry']>[0]) {
-    const petAds = await this.petAdRepo.findByCountry(filters);
+    const petAds = await this.petAdRepository.findByCountry(filters);
 
     return petAds;
   }
 
   async getByUser(userId: Parameters<PetAdRepository['findByUser']>[0]) {
-    const petAds = await this.petAdRepo.findByUser(userId);
+    const petAds = await this.petAdRepository.findByUser(userId);
 
     return petAds;
   }
@@ -40,7 +47,7 @@ export class PetAdService {
   async updateOneById(petAd: Parameters<PetAdRepository['updateOneById']>[0]) {
     await this.petAdValidator.validate(petAd);
 
-    const updatedPetAd = await this.petAdRepo.updateOneById(petAd);
+    const updatedPetAd = await this.petAdRepository.updateOneById(petAd);
 
     return updatedPetAd;
   }

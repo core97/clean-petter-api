@@ -2,8 +2,12 @@ import { User } from '@user/domain/user.entity';
 import { UserRepository } from '@user/domain/user.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 
-export class PrismaUserClient implements UserRepository {
-  constructor(private prisma: Prisma) {}
+export default class PrismaUserClient implements UserRepository {
+  private prisma: Prisma;
+
+  constructor(dependencies: { prisma: Prisma }) {
+    this.prisma = dependencies.prisma;
+  }
 
   async create(user: Pick<User['props'], 'email' | 'name' | 'password'>) {
     const userCreated = await this.prisma.client.user.create({

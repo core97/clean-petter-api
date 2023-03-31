@@ -25,7 +25,7 @@
     }
 	],
   "plugins": ["@typescript-eslint"],
-  "ignorePatterns": ["jest.config.ts", "build"],
+  "ignorePatterns": ["jest.config.ts", "environment.d.ts", "build"],
   "rules": {
     "import/prefer-default-export": "off",
     "react/jsx-filename-extension": "off",

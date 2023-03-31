@@ -7,8 +7,12 @@ import {
   PaginationResult,
 } from '@shared/domain/types/pagination';
 
-export class PrismaPetAdRepository implements PetAdRepository {
-  constructor(private prisma: Prisma) {}
+export default class PrismaPetAdRepository implements PetAdRepository {
+  private prisma: Prisma;
+
+  constructor(dependencies: { prisma: Prisma }) {
+    this.prisma = dependencies.prisma;
+  }
 
   async create(petAd: PetAd['props']): Promise<PetAd> {
     const petAdCreated = await this.prisma.client.petAd.create({

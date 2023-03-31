@@ -3,8 +3,12 @@ import { BreedRepository } from '@breed/domain/breed.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { PetType } from '@shared/domain/types/pet-type';
 
-export class PrismaBreedClient implements BreedRepository {
-  constructor(private prisma: Prisma) {}
+export default class PrismaBreedClient implements BreedRepository {
+  private prisma: Prisma;
+
+  constructor(dependencies: { prisma: Prisma }) {
+    this.prisma = dependencies.prisma;
+  }
 
   async create(breed: Omit<Breed['props'], 'petAds'>): Promise<Breed> {
     const createdBreed = await this.prisma.client.breed.create({
