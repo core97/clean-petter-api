@@ -46,21 +46,19 @@ export default class UserController {
       return response.status(422).end();
     }
 
-    /**
-     * TODO:
-     * - comprobar que en el payload del token sea el mimso que usuario a actualizar
-     * - Si es el mismo incluir todo el "user.props" menos la contraseña
-     * - Si no es el mismo ocultar los campos privados
-     */
     const user = await this.userFinderOneByEmail.run(req.params.email);
 
-    return response.status(200).json(user.props);
+    const isSameUser = req.payload?.user?.email === user.props.email;
+
+    const userDto = user.getPublicData(isSameUser);
+
+    return response.status(200).json(userDto);
   }
 
   async signInPut(req: Request, response: Response) {
     const { token, user } = await this.userSignIn.run(req.body);
 
-    response.cookie('auth-token', token, {
+    response.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // one week
@@ -76,7 +74,7 @@ export default class UserController {
   ) {
     const { token, user } = await this.userSignUp.run(req.body);
 
-    response?.cookie('auth-token', token, {
+    response?.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // one week
@@ -87,16 +85,17 @@ export default class UserController {
   }
 
   async userPatch(req: Request, response: Response) {
-    /**
-     * TODO:
-     * - comprobar que en el payload del token sea el mimso que usuario a actualizar
-     * - borrar "password"
-     */
+    if (req.payload?.user?.email !== req.params.email) {
+      return response.status(403).end();
+    }
+
     const user = await this.userUpdaterOneByEmail.run({
       email: req.params.email,
       ...req.body,
     });
 
-    return response.status(200).json(user.props);
+    const userDto = user.getPublicData(true);
+
+    return response.status(200).json(userDto);
   }
 }

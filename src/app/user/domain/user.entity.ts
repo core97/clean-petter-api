@@ -24,6 +24,12 @@ export class User {
     });
   }
 
+  getPublicData(isSameUser?: boolean) {
+    const { password, address, ...rest } = this.props;
+
+    return isSameUser ? { ...rest, address } : rest;
+  }
+
   static isValidEmail(email: unknown) {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     return typeof email === 'string' && emailRegex.test(email);
@@ -36,7 +42,8 @@ export class User {
      * - at least one capital letter
      * - at least one number
      */
-    const passwordRegex = /^(?=.*[!@#$%^&*()_+\\=[\]{};':"\\|,.<>?])(?=.*[A-Z])(?=.*[0-9]).{8,}$/gm;
+    const passwordRegex =
+      /^(?=.*[!@#$%^&*()_+\\=[\]{};':"\\|,.<>?])(?=.*[A-Z])(?=.*[0-9]).{8,}$/gm;
 
     return typeof password === 'string' && passwordRegex.test(password);
   }

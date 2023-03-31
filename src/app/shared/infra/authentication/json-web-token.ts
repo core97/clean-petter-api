@@ -9,7 +9,7 @@ export class JsonWebToken extends Authentication {
     try {
       const decodedToken = verify(
         token || '',
-        process.env.MY_SECRET_AUTH_TOKEN as string
+        process.env.MY_SECRET_AUTH_TOKEN
       );
 
       if (typeof decodedToken === 'string') {
@@ -30,13 +30,9 @@ export class JsonWebToken extends Authentication {
   createAuthToken({ email, id }: AutTokenPayload): string {
     const payloadForToken = { id, email };
 
-    const token = sign(
-      payloadForToken,
-      process.env.MY_SECRET_AUTH_TOKEN as string,
-      {
-        expiresIn: 60 * 60 * 24 * 7, // One week
-      }
-    );
+    const token = sign(payloadForToken, process.env.MY_SECRET_AUTH_TOKEN, {
+      expiresIn: 60 * 60 * 24 * 7, // One week
+    });
 
     return token;
   }

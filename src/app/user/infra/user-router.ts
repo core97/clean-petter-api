@@ -7,12 +7,16 @@ export const getUserRouter = () => {
 
   userRouter.get(
     '/:email',
-    handleRequest<UserController>('userController', 'userByEmailGet')
+    handleRequest<UserController>('userController', 'userByEmailGet', {
+      authRequired: true,
+    })
   );
 
   userRouter.patch(
     '/:email',
-    handleRequest<UserController>('userController', 'userPatch')
+    handleRequest<UserController>('userController', 'userPatch', {
+      authRequired: true,
+    })
   );
 
   userRouter.put(
@@ -27,7 +31,9 @@ export const getUserRouter = () => {
 
   userRouter.delete(
     '/:email',
-    handleRequest<UserController>('userController', 'userAccountDelete')
+    handleRequest<UserController>('userController', 'userAccountDelete', {
+      authRequired: true,
+    })
   );
 
   return userRouter;
