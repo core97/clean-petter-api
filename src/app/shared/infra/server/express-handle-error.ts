@@ -1,4 +1,7 @@
 import { Request, Response } from 'express';
+import { AppError } from '@shared/application/errors/app-error';
+import { ERROR_CODE_TO_HTTP_STATUS } from '@shared/application/http/http-errors';
+import { HttpStatus } from '@shared/application/http/http-status';
 
 export const expressHandleError = (
   error: unknown,
@@ -8,9 +11,11 @@ export const expressHandleError = (
   console.error(`::: URL ::: ${req.method} ${req.url}`);
   console.error(error);
 
-  if (error instanceof Error) {
-    res.status(400).json({ message: error.message });
-  } else {
-    res.status(500).json({ message: 'An unexpected error has occurred' });
+  if (error instanceof AppError) {
+    const httpStatus = ERROR_CODE_TO_HTTP_STATUS[error.code];
+    res.status(httpStatus).end();
+    return;
   }
+
+  res.status(HttpStatus.INTERNAL_ERROR).end();
 };
