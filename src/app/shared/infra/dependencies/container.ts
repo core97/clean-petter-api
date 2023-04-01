@@ -3,6 +3,7 @@ import { StringUtils } from '@shared/application/string-utils';
 import { JsonWebToken } from '@shared/infra/authentication/json-web-token';
 import { Bcrypt } from '@shared/infra/cryptographic/bcrypt';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
+import { PinoLogger } from '@shared/infra/logger/pino-logger';
 import { breedModules } from '@breed/infra/breed-module';
 import { petAdModules } from '@pet-ad/infra/pet-ad-module';
 import { userModules } from '@user/infra/user-module';
@@ -16,6 +17,7 @@ export const setUpDependencies = () => {
     authentication: awilix.asClass(JsonWebToken),
     cryptographic: awilix.asClass(Bcrypt),
     prisma: awilix.asClass(Prisma).singleton(),
+    logger: awilix.asClass(PinoLogger),
   });
 
   container.loadModules(
