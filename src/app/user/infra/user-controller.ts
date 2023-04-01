@@ -5,8 +5,9 @@ import UserFinderOneByEmail from '@user/application/user-finder-one-by-email';
 import UserSignIn from '@user/application/user-sign-in';
 import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
+import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 
-export default class UserController {
+export default class UserController extends ExpressHttpHandler {
   private userAccountDeleter: UserAccountDeleter;
 
   private userFinderOneByEmail: UserFinderOneByEmail;
@@ -24,6 +25,7 @@ export default class UserController {
     userSignUp: UserSignUp;
     userUpdaterOneByEmail: UserUpdaterOneByEmail;
   }) {
+    super();
     this.userAccountDeleter = dependencies.userAccountDeleter;
     this.userFinderOneByEmail = dependencies.userFinderOneByEmail;
     this.userSignIn = dependencies.userSignIn;
@@ -31,19 +33,23 @@ export default class UserController {
     this.userUpdaterOneByEmail = dependencies.userUpdaterOneByEmail;
   }
 
-  async userAccountDelete(req: Request, response: Response) {
+  async userAccountDelete(req: Request, res: Response) {
     if (!User.isValidEmail(req.query.email)) {
-      return response.status(422).end();
+      return this.invalidParams(res);
+    }
+
+    if (req.payload?.user?.email !== req.params.email) {
+      return this.forbidden(res);
     }
 
     await this.userAccountDeleter.run(req.params.email);
 
-    return response.status(200).end();
+    return this.ok(res);
   }
 
-  async userByEmailGet(req: Request, response: Response) {
+  async userByEmailGet(req: Request, res: Response) {
     if (!User.isValidEmail(req.params.email)) {
-      return response.status(422).end();
+      return this.invalidParams(res);
     }
 
     const user = await this.userFinderOneByEmail.run(req.params.email);
@@ -52,41 +58,38 @@ export default class UserController {
 
     const userDto = user.getPublicData(isSameUser);
 
-    return response.status(200).json(userDto);
+    return this.ok(res, userDto);
   }
 
-  async signInPut(req: Request, response: Response) {
+  async signInPut(req: Request, res: Response) {
     const { token, user } = await this.userSignIn.run(req.body);
 
-    response.cookie(process.env.AUTH_COOKIE_NAME, token, {
+    res.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // one week
       httpOnly: true,
     });
 
-    return response.status(200).json(user);
+    return this.ok(res, user);
   }
 
-  async signUpPost(
-    req: { body: { email: string; password: string; name: string } },
-    response?: Response
-  ) {
+  async signUpPost(req: Request, res: Response) {
     const { token, user } = await this.userSignUp.run(req.body);
 
-    response?.cookie(process.env.AUTH_COOKIE_NAME, token, {
+    res?.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // one week
       httpOnly: true,
     });
 
-    return response?.status(200).json(user);
+    return this.ok(res, user);
   }
 
-  async userPatch(req: Request, response: Response) {
+  async userPatch(req: Request, res: Response) {
     if (req.payload?.user?.email !== req.params.email) {
-      return response.status(403).end();
+      return res.status(403).end();
     }
 
     const user = await this.userUpdaterOneByEmail.run({
@@ -96,6 +99,6 @@ export default class UserController {
 
     const userDto = user.getPublicData(true);
 
-    return response.status(200).json(userDto);
+    return this.ok(res, userDto);
   }
 }

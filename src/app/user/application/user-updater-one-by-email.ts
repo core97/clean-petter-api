@@ -2,6 +2,8 @@ import UserValidator from '@user/application/user-validator';
 import { UserRepository } from '@user/domain/user.repository';
 import { Cryptographic } from '@shared/application/cryptographic';
 import { StringUtils } from '@shared/application/string-utils';
+import { UnprocessableEntityError } from '@shared/application/errors/unprocessable-entity.error';
+import { UnauthorizatedError } from '@shared/application/errors/unauthorizated.error';
 
 export default class UserUpdaterOneByEmail {
   private userRepository: UserRepository;
@@ -32,7 +34,9 @@ export default class UserUpdaterOneByEmail {
       user.password && user.password !== userFound.props.password;
 
     if (isPasswordUpdate && !options.oldPassword) {
-      throw Error('old password is required to update password');
+      throw new UnprocessableEntityError(
+        'old password is required to update password'
+      );
     }
 
     let newPasswordEncrypted: string | undefined;
@@ -45,7 +49,7 @@ export default class UserUpdaterOneByEmail {
 
         newPasswordEncrypted = await this.cryptographic.hash(user.password);
       } catch (error) {
-        throw new Error('password does not match');
+        throw new UnauthorizatedError('password does not match');
       }
     }
 

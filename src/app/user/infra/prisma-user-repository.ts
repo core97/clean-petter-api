@@ -1,6 +1,7 @@
 import { User } from '@user/domain/user.entity';
 import { UserRepository } from '@user/domain/user.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
+import { NotFoundError } from '@shared/application/errors/not-found.error';
 
 export default class PrismaUserClient implements UserRepository {
   private prisma: Prisma;
@@ -41,7 +42,7 @@ export default class PrismaUserClient implements UserRepository {
     });
 
     if (!user) {
-      throw Error('not found');
+      throw new NotFoundError('not found user');
     }
 
     return User.instantiate(user);
