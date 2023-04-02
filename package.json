@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^4.11.0",
+    "@sentry/node": "^7.46.0",
     "awilix": "^8.0.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
