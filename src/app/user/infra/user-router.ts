@@ -1,21 +1,20 @@
 import { Router } from 'express';
 import UserController from '@user/infra/user-controller';
+import { authMiddleware } from '@shared/infra/middleware/auth-middleware';
 import { handleRequest } from '@shared/infra/server/express-handle-request';
 
 export const userRouter = Router();
 
 userRouter.get(
   '/:email',
-  handleRequest<UserController>('userController', 'userByEmailGet', {
-    authRequired: true,
-  })
+  authMiddleware,
+  handleRequest<UserController>('userController', 'userByEmailGet')
 );
 
 userRouter.patch(
   '/:email',
-  handleRequest<UserController>('userController', 'userPatch', {
-    authRequired: true,
-  })
+  authMiddleware,
+  handleRequest<UserController>('userController', 'userPatch')
 );
 
 userRouter.put(
@@ -30,7 +29,6 @@ userRouter.post(
 
 userRouter.delete(
   '/:email',
-  handleRequest<UserController>('userController', 'userAccountDelete', {
-    authRequired: true,
-  })
+  authMiddleware,
+  handleRequest<UserController>('userController', 'userAccountDelete')
 );

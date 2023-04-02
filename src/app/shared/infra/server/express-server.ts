@@ -1,6 +1,9 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { userRouter } from '@user/infra/user-router';
+import { containerScopeMiddleware } from '@shared/infra/middleware/container-scope-middleware';
+import { sentryScopeMiddleware } from '@shared/infra/middleware/sentry-scope-middleware';
+import { globalErrorMiddleware } from '@shared/infra/middleware/global-error-middleware';
 
 export const initializeServer = () => {
   const app = express();
@@ -9,7 +12,13 @@ export const initializeServer = () => {
 
   app.use(express.json());
 
+  app.use(containerScopeMiddleware);
+
+  app.use(sentryScopeMiddleware);
+
   app.use('/api/users', userRouter);
+
+  app.use(globalErrorMiddleware);
 
   app.listen(process.env.PORT, () => {
     console.log(
