@@ -19,13 +19,7 @@ export default class PrismaUserClient implements UserRepository {
       },
     });
 
-    return User.instantiate({
-      createdAt: userCreated.createdAt,
-      email: userCreated.email,
-      id: userCreated.id,
-      name: userCreated.name,
-      password: userCreated.password,
-    });
+    return User.instantiate(userCreated);
   }
 
   async deleteOneByEmail(email: User['props']['email']) {
