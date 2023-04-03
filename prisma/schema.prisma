@@ -28,18 +28,24 @@ model PetAd {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  email     String   @unique
-  name      String
-  petAds    PetAd[]
-  password  String
-  address   Address?
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime     @default(now())
+  email       String       @unique
+  name        String
+  petAds      PetAd[]
+  password    String
+  address     Address?
+  preadoption Preadoption?
 }
 
 type Address {
   city    String
   country CountryIso
+}
+
+type Preadoption {
+  formId     String
+  responseId String
 }
 
 enum CountryIso {

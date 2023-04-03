@@ -1,5 +1,6 @@
 import * as awilix from 'awilix';
 import { StringUtils } from '@shared/application/string-utils';
+import { Fetcher } from '@shared/application/fetcher';
 import { JsonWebToken } from '@shared/infra/authentication/json-web-token';
 import { Bcrypt } from '@shared/infra/cryptographic/bcrypt';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
@@ -19,6 +20,7 @@ export const setUpDependencies = () => {
     cryptographic: awilix.asClass(Bcrypt),
     prisma: awilix.asClass(Prisma).singleton(),
     tracker: awilix.asClass(SentryTracker).singleton(),
+    fetcher: awilix.asClass(Fetcher),
     logger: awilix.asClass(PinoLogger).inject(() => ({
       isEnabled: true,
       level: 'info',
