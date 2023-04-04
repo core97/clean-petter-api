@@ -6,8 +6,12 @@ import { Bcrypt } from '@shared/infra/cryptographic/bcrypt';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { PinoLogger } from '@shared/infra/logger/pino-logger';
 import { SentryTracker } from '@shared/infra/tracker/sentry-tracker';
+import { ThirdParties } from '@shared/infra/third-parties';
+
+/* Business modules */
 import { breedModules } from '@breed/infra/breed-module';
 import { petAdModules } from '@pet-ad/infra/pet-ad-module';
+import { petAdRequestModules } from '@pet-ad-request/infra/pet-ad-request-module';
 import { userModules } from '@user/infra/user-module';
 
 export const container = awilix.createContainer({
@@ -21,6 +25,7 @@ export const setUpDependencies = () => {
     prisma: awilix.asClass(Prisma).singleton(),
     tracker: awilix.asClass(SentryTracker).singleton(),
     fetcher: awilix.asClass(Fetcher),
+    thirdParties: awilix.asClass(ThirdParties),
     logger: awilix.asClass(PinoLogger).inject(() => ({
       isEnabled: true,
       level: 'info',
@@ -31,10 +36,12 @@ export const setUpDependencies = () => {
   });
 
   container.loadModules(
-    [...breedModules, ...petAdModules, ...userModules].map(module => [
-      module.path,
-      module.opts,
-    ]),
+    [
+      ...breedModules,
+      ...petAdModules,
+      ...petAdRequestModules,
+      ...userModules,
+    ].map(module => [module.path, module.opts]),
     {
       formatName: (name, description) =>
         StringUtils.toCamelCase(

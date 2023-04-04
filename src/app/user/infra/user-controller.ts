@@ -6,6 +6,7 @@ import UserSignIn from '@user/application/user-sign-in';
 import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
+import { ThirdParties } from '@shared/infra/third-parties';
 
 export default class UserController extends ExpressHttpHandler {
   private userAccountDeleter: UserAccountDeleter;
@@ -18,12 +19,15 @@ export default class UserController extends ExpressHttpHandler {
 
   private userUpdaterOneByEmail: UserUpdaterOneByEmail;
 
+  private thirdParties: ThirdParties;
+
   constructor(dependencies: {
     userAccountDeleter: UserAccountDeleter;
     userFinderOneByEmail: UserFinderOneByEmail;
     userSignIn: UserSignIn;
     userSignUp: UserSignUp;
     userUpdaterOneByEmail: UserUpdaterOneByEmail;
+    thirdParties: ThirdParties;
   }) {
     super();
     this.userAccountDeleter = dependencies.userAccountDeleter;
@@ -31,6 +35,7 @@ export default class UserController extends ExpressHttpHandler {
     this.userSignIn = dependencies.userSignIn;
     this.userSignUp = dependencies.userSignUp;
     this.userUpdaterOneByEmail = dependencies.userUpdaterOneByEmail;
+    this.thirdParties = dependencies.thirdParties;
   }
 
   async userAccountDelete(req: Request, res: Response) {
@@ -89,7 +94,7 @@ export default class UserController extends ExpressHttpHandler {
 
   async userPatch(req: Request, res: Response) {
     if (req.payload?.user?.email !== req.params.email) {
-      return res.status(403).end();
+      return this.forbidden(res);
     }
 
     const user = await this.userUpdaterOneByEmail.run({
@@ -100,5 +105,35 @@ export default class UserController extends ExpressHttpHandler {
     const userDto = user.getPublicData(true);
 
     return this.ok(res, userDto);
+  }
+
+  async peadoptionGet(req: Request, res: Response) {
+    /**
+     * TODO: crear un caso de uso
+     * - Hacer que el endpoint sea necesario la autenticacion
+     * - Obtener el usuario a traves del token
+     * - Obtener los anuncios del usuario y obtener el usuario que se ha interesado por el anuncio
+     * - Comprobar si el usuario que nos ha pasado como req.params.email esta dentro de los interesados del anuncio
+     * - Si es asi, obtener su formulario de preadopcion con user.preadoption
+     */
+
+    if (!req.payload?.user) {
+      return this.unauthorized(res);
+    }
+
+    if (
+      typeof req.query.formId !== 'string' ||
+      typeof req.query.responseId !== 'string' ||
+      typeof req.params.email !== 'string'
+    ) {
+      return this.invalidParams(res);
+    }
+
+    const formResult = await this.thirdParties.typeform.getFormResult(
+      req.query.formId,
+      req.query.responseId
+    );
+
+    return this.ok(res, formResult);
   }
 }

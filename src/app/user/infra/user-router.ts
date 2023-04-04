@@ -11,6 +11,12 @@ userRouter.get(
   handleRequest<UserController>('userController', 'userByEmailGet')
 );
 
+userRouter.get(
+  '/:email/preadoption',
+  authMiddleware,
+  handleRequest<UserController>('userController', 'peadoptionGet')
+);
+
 userRouter.patch(
   '/:email',
   authMiddleware,

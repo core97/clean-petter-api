@@ -1,4 +1,3 @@
-import fetch, { RequestInit } from 'node-fetch';
 import { Logger } from '@shared/application/logger';
 import { InternalServerError } from '@shared/application/errors/internal-server.error';
 
@@ -9,7 +8,7 @@ export class Fetcher {
     this.logger = dependencies.logger;
   }
 
-  async fecth<T>(url: string, init?: RequestInit): Promise<Exclude<T, void>> {
+  async fetch<T>(url: string, init?: RequestInit): Promise<Exclude<T, void>> {
     const requestInit: RequestInit = {
       ...(!!Object.keys(init || {}).length && init),
       headers: {
