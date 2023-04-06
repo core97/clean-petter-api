@@ -1,18 +1,22 @@
 import { RequestStatus } from '@pet-ad-request/domain/types/request-status';
-import { Entity } from '@shared/domain/types/entity';
+import { EntityV2 } from '@shared/domain/types/entity';
 
-export class PetAdRequest {
+export class PetAdRequest extends EntityV2 {
+  interestedUserId!: string;
+
+  petAdId!: string;
+
+  status!: RequestStatus;
+
   constructor(
-    public props: Entity & {
-      interestedUserId: string;
-      petAdId: string;
-      status: RequestStatus;
-    }
+    props: Pick<
+      PetAdRequest,
+      'id' | 'createdAt' | 'interestedUserId' | 'petAdId' | 'status'
+    >
   ) {
+    super(props);
     Object.assign(this, props);
   }
-
-  static instantiate(petAdRequest: PetAdRequest['props']) {
-    return new PetAdRequest(petAdRequest);
-  }
 }
+
+export type PetAdRequestProps = ConstructorParameters<typeof PetAdRequest>[0];

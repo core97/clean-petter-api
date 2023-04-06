@@ -20,6 +20,13 @@ export default class PetAdRequestService {
     await this.petAdRequestRepository.deleteOneById(petAdRequestId);
   }
 
+  async getOneById(
+    petAdRequest: Parameters<PetAdRequestRepository['findOneById']>[0]
+  ) {
+    const request = await this.petAdRequestRepository.findOneById(petAdRequest);
+    return request;
+  }
+
   async updateOneById(
     petAd: Parameters<PetAdRequestRepository['updateOneById']>[0]
   ) {

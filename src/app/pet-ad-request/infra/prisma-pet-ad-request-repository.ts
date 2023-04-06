@@ -1,5 +1,9 @@
 import { PetAdRequestRepository } from '@pet-ad-request/domain/pet-ad-request.repository';
-import { PetAdRequest } from '@pet-ad-request/domain/pet-ad-request.entity';
+import {
+  PetAdRequest,
+  PetAdRequestProps,
+} from '@pet-ad-request/domain/pet-ad-request.entity';
+import { NotFoundError } from '@shared/application/errors/not-found.error';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 
 export default class PrismaPetAdRequestRepository
@@ -11,14 +15,26 @@ export default class PrismaPetAdRequestRepository
     this.prisma = dependencies.prisma;
   }
 
-  async create(petAdRequest: PetAdRequest['props']): Promise<PetAdRequest> {
+  async findOneById(id: string): Promise<PetAdRequest> {
+    const petAdRequest = await this.prisma.client.petAdRequest.findUnique({
+      where: { id },
+    });
+
+    if (!petAdRequest) {
+      throw new NotFoundError('Not found pet ad request by id');
+    }
+
+    return new PetAdRequest(petAdRequest);
+  }
+
+  async create(petAdRequest: PetAdRequestProps): Promise<PetAdRequest> {
     const petAdRequestCreated = await this.prisma.client.petAdRequest.create({
       data: {
         ...petAdRequest,
       },
     });
 
-    return PetAdRequest.instantiate(petAdRequestCreated);
+    return new PetAdRequest(petAdRequestCreated);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -30,8 +46,7 @@ export default class PrismaPetAdRequestRepository
   }
 
   async updateOneById(
-    petAdRequest: Pick<PetAdRequest['props'], 'id'> &
-      Partial<PetAdRequest['props']>
+    petAdRequest: Pick<PetAdRequestProps, 'id'> & Partial<PetAdRequestProps>
   ): Promise<PetAdRequest> {
     const updatedPetAdRequest = await this.prisma.client.petAdRequest.update({
       where: {
@@ -42,6 +57,6 @@ export default class PrismaPetAdRequestRepository
       },
     });
 
-    return PetAdRequest.instantiate(updatedPetAdRequest);
+    return new PetAdRequest(updatedPetAdRequest);
   }
 }

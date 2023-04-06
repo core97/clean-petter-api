@@ -1,11 +1,8 @@
-import { PetAdRequest } from '@pet-ad-request/domain/pet-ad-request.entity';
+import {
+  PetAdRequest,
+  PetAdRequestProps,
+} from '@pet-ad-request/domain/pet-ad-request.entity';
+import { Repository } from '@shared/domain/types/repository';
 
-export interface PetAdRequestRepository {
-  create(petAdRequest: PetAdRequest['props']): Promise<PetAdRequest>;
-
-  deleteOneById(id: PetAdRequest['props']['id']): Promise<void>;
-
-  updateOneById(
-    petAd: Pick<PetAdRequest['props'], 'id'> & Partial<PetAdRequest['props']>
-  ): Promise<PetAdRequest>;
-}
+export interface PetAdRequestRepository
+  extends Repository<PetAdRequest, PetAdRequestProps> {}
