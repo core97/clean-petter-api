@@ -1,4 +1,4 @@
-import { User } from '@user/domain/user.entity';
+import { User, UserProps } from '@user/domain/user.entity';
 import { UserRepository } from '@user/domain/user.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { NotFoundError } from '@shared/application/errors/not-found.error';
@@ -10,7 +10,40 @@ export default class PrismaUserClient implements UserRepository {
     this.prisma = dependencies.prisma;
   }
 
-  async create(user: Pick<User['props'], 'email' | 'name' | 'password'>) {
+  async deleteOneById(id: string): Promise<void> {
+    await this.prisma.client.user.delete({
+      where: { id },
+    });
+  }
+
+  async findOneById(id: string): Promise<User> {
+    const user = await this.prisma.client.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundError('not found user by id');
+    }
+
+    return new User(user);
+  }
+
+  async updateOneById(
+    user: Pick<UserProps, 'id'> & Partial<UserProps>
+  ): Promise<User> {
+    const updatedUser = await this.prisma.client.user.update({
+      where: {
+        email: user.email,
+      },
+      data: user,
+    });
+
+    return new User(updatedUser);
+  }
+
+  async create(user: Pick<UserProps, 'email' | 'name' | 'password'>) {
     const userCreated = await this.prisma.client.user.create({
       data: {
         email: user.email,
@@ -19,16 +52,16 @@ export default class PrismaUserClient implements UserRepository {
       },
     });
 
-    return User.instantiate(userCreated);
+    return new User(userCreated);
   }
 
-  async deleteOneByEmail(email: User['props']['email']) {
+  async deleteOneByEmail(email: UserProps['email']) {
     await this.prisma.client.user.delete({
       where: { email },
     });
   }
 
-  async findOneByEmail(email: User['props']['email']) {
+  async findOneByEmail(email: UserProps['email']) {
     const user = await this.prisma.client.user.findUnique({
       where: {
         email,
@@ -36,26 +69,23 @@ export default class PrismaUserClient implements UserRepository {
     });
 
     if (!user) {
-      throw new NotFoundError('not found user');
+      throw new NotFoundError('not found user by email');
     }
 
-    return User.instantiate(user);
+    return new User(user);
   }
 
   async updateOneByEmail(
-    user: Pick<User['props'], 'email'> &
-      Partial<Omit<User['props'], 'petAds' | 'email'>>
+    user: Pick<UserProps, 'email'> &
+      Partial<Omit<UserProps, 'petAds' | 'email'>>
   ) {
     const updatedUser = await this.prisma.client.user.update({
       where: {
         email: user.email,
       },
-      data: {
-        ...user,
-        address: user.address?.props,
-      },
+      data: user,
     });
 
-    return User.instantiate(updatedUser);
+    return new User(updatedUser);
   }
 }

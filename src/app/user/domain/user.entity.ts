@@ -1,31 +1,27 @@
 import { Address } from '@shared/domain/address.value-object';
-import { Entity } from '@shared/domain/types/entity';
+import { EntityV2 } from '@shared/domain/types/entity';
 
-export class User {
+export class User extends EntityV2 {
+  email!: string;
+
+  name!: string;
+
+  password!: string;
+
+  address?: Address | null;
+
   constructor(
-    public props: Entity & {
-      email: string;
-      name: string;
-      password: string;
-      address?: Address;
-    }
+    props: Pick<
+      User,
+      'id' | 'createdAt' | 'address' | 'email' | 'name' | 'password'
+    >
   ) {
+    super(props);
     Object.assign(this, props);
   }
 
-  static instantiate(
-    user: Omit<User['props'], 'address'> & {
-      address?: Address['props'] | null;
-    }
-  ) {
-    return new User({
-      ...user,
-      address: user.address ? new Address(user.address) : undefined,
-    });
-  }
-
   getPublicData(isSameUser?: boolean) {
-    const { password, address, ...rest } = this.props;
+    const { password, address, ...rest } = this;
 
     return isSameUser ? { ...rest, address } : rest;
   }
@@ -48,3 +44,5 @@ export class User {
     return typeof password === 'string' && passwordRegex.test(password);
   }
 }
+
+export type UserProps = ConstructorParameters<typeof User>[0];

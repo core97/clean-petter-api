@@ -9,17 +9,17 @@ import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 import { ThirdParties } from '@shared/infra/third-parties';
 
 export default class UserController extends ExpressHttpHandler {
-  private userAccountDeleter: UserAccountDeleter;
+  private userAccountDeleter!: UserAccountDeleter;
 
-  private userFinderOneByEmail: UserFinderOneByEmail;
+  private userFinderOneByEmail!: UserFinderOneByEmail;
 
-  private userSignIn: UserSignIn;
+  private userSignIn!: UserSignIn;
 
-  private userSignUp: UserSignUp;
+  private userSignUp!: UserSignUp;
 
-  private userUpdaterOneByEmail: UserUpdaterOneByEmail;
+  private userUpdaterOneByEmail!: UserUpdaterOneByEmail;
 
-  private thirdParties: ThirdParties;
+  private thirdParties!: ThirdParties;
 
   constructor(dependencies: {
     userAccountDeleter: UserAccountDeleter;
@@ -30,12 +30,7 @@ export default class UserController extends ExpressHttpHandler {
     thirdParties: ThirdParties;
   }) {
     super();
-    this.userAccountDeleter = dependencies.userAccountDeleter;
-    this.userFinderOneByEmail = dependencies.userFinderOneByEmail;
-    this.userSignIn = dependencies.userSignIn;
-    this.userSignUp = dependencies.userSignUp;
-    this.userUpdaterOneByEmail = dependencies.userUpdaterOneByEmail;
-    this.thirdParties = dependencies.thirdParties;
+    Object.assign(this, dependencies);
   }
 
   async userAccountDelete(req: Request, res: Response) {
@@ -59,7 +54,7 @@ export default class UserController extends ExpressHttpHandler {
 
     const user = await this.userFinderOneByEmail.run(req.params.email);
 
-    const isSameUser = req.payload?.user?.email === user.props.email;
+    const isSameUser = req.payload?.user?.email === user.email;
 
     const userDto = user.getPublicData(isSameUser);
 

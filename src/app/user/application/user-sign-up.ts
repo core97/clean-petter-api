@@ -7,13 +7,13 @@ import { NotFoundError } from '@shared/application/errors/not-found.error';
 import { ConflictError } from '@shared/application/errors/conflict.error';
 
 export default class UserSignUp {
-  private userRepository: UserRepository;
+  private userRepository!: UserRepository;
 
-  private userSignIn: UserSignIn;
+  private userSignIn!: UserSignIn;
 
-  private userValidator: UserValidator;
+  private userValidator!: UserValidator;
 
-  private cryptographic: Cryptographic;
+  private cryptographic!: Cryptographic;
 
   constructor(dependencies: {
     userRepository: UserRepository;
@@ -21,10 +21,7 @@ export default class UserSignUp {
     userValidator: UserValidator;
     cryptographic: Cryptographic;
   }) {
-    this.userRepository = dependencies.userRepository;
-    this.userSignIn = dependencies.userSignIn;
-    this.userValidator = dependencies.userValidator;
-    this.cryptographic = dependencies.cryptographic;
+    Object.assign(this, dependencies);
   }
 
   async run(user: Parameters<UserRepository['create']>[0]) {
@@ -45,8 +42,8 @@ export default class UserSignUp {
         });
 
         const userAndToken = await this.userSignIn.run({
-          email: userCreated.props.email,
-          password: userCreated.props.password,
+          email: userCreated.email,
+          password: userCreated.password,
         });
 
         return userAndToken;

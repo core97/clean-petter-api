@@ -3,20 +3,18 @@ import { UserRepository } from '@user/domain/user.repository';
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 
 export default class UserPreadoptionFinder {
-  private userRepository: UserRepository;
+  private userRepository!: UserRepository;
 
-  private userValidator: UserValidator;
+  private userValidator!: UserValidator;
 
-  private petAdRepository: PetAdRepository;
+  private petAdRepository!: PetAdRepository;
 
   constructor(dependencies: {
     userRepository: UserRepository;
     userValidator: UserValidator;
     petAdRepository: PetAdRepository;
   }) {
-    this.userRepository = dependencies.userRepository;
-    this.userValidator = dependencies.userValidator;
-    this.petAdRepository = dependencies.petAdRepository;
+    Object.assign(this, dependencies);
   }
 
   /* async run(params: {

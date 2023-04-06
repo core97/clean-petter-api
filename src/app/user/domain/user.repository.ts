@@ -1,16 +1,13 @@
-import { User } from '@user/domain/user.entity';
+import { User, UserProps } from '@user/domain/user.entity';
+import { Repository } from '@shared/domain/types/repository';
 
-export interface UserRepository {
-  create(
-    user: Pick<User['props'], 'email' | 'name' | 'password'>
-  ): Promise<User>;
+export interface UserRepository extends Repository<User, UserProps> {
+  deleteOneByEmail(email: UserProps['email']): Promise<void>;
 
-  deleteOneByEmail(email: User['props']['email']): Promise<void>;
-
-  findOneByEmail(email: User['props']['email']): Promise<User>;
+  findOneByEmail(email: UserProps['email']): Promise<User>;
 
   updateOneByEmail(
-    user: Pick<User['props'], 'email'> &
-      Partial<Pick<User['props'], 'address' | 'name' | 'password'>>
+    user: Pick<UserProps, 'email'> &
+      Partial<Pick<UserProps, 'address' | 'name' | 'password'>>
   ): Promise<User>;
 }

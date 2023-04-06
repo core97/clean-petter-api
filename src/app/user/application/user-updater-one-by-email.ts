@@ -6,20 +6,18 @@ import { UnprocessableEntityError } from '@shared/application/errors/unprocessab
 import { UnauthorizatedError } from '@shared/application/errors/unauthorizated.error';
 
 export default class UserUpdaterOneByEmail {
-  private userRepository: UserRepository;
+  private userRepository!: UserRepository;
 
-  private userValidator: UserValidator;
+  private userValidator!: UserValidator;
 
-  private cryptographic: Cryptographic;
+  private cryptographic!: Cryptographic;
 
   constructor(dependencies: {
     userRepository: UserRepository;
     userValidator: UserValidator;
     cryptographic: Cryptographic;
   }) {
-    this.userRepository = dependencies.userRepository;
-    this.userValidator = dependencies.userValidator;
-    this.cryptographic = dependencies.cryptographic;
+    Object.assign(this, dependencies);
   }
 
   async run(
@@ -31,7 +29,7 @@ export default class UserUpdaterOneByEmail {
     const userFound = await this.userRepository.findOneByEmail(user.email);
 
     const isPasswordUpdate =
-      user.password && user.password !== userFound.props.password;
+      user.password && user.password !== userFound.password;
 
     if (isPasswordUpdate && !options.oldPassword) {
       throw new UnprocessableEntityError(
@@ -44,7 +42,7 @@ export default class UserUpdaterOneByEmail {
       try {
         await this.cryptographic.compare(
           options.oldPassword,
-          userFound.props.password
+          userFound.password
         );
 
         newPasswordEncrypted = await this.cryptographic.hash(user.password);

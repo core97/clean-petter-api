@@ -5,13 +5,13 @@ import { Authentication } from '@shared/application/authentication';
 import { UnauthorizatedError } from '@shared/application/errors/unauthorizated.error';
 
 export default class UserSignIn {
-  private userRepository: UserRepository;
+  private userRepository!: UserRepository;
 
-  private userValidator: UserValidator;
+  private userValidator!: UserValidator;
 
-  private cryptographic: Cryptographic;
+  private cryptographic!: Cryptographic;
 
-  private authentication: Authentication;
+  private authentication!: Authentication;
 
   constructor(dependencies: {
     userRepository: UserRepository;
@@ -19,10 +19,7 @@ export default class UserSignIn {
     cryptographic: Cryptographic;
     authentication: Authentication;
   }) {
-    this.userRepository = dependencies.userRepository;
-    this.userValidator = dependencies.userValidator;
-    this.cryptographic = dependencies.cryptographic;
-    this.authentication = dependencies.authentication;
+    Object.assign(this, dependencies);
   }
 
   async run(user: { email: string; password: string }) {
@@ -31,18 +28,18 @@ export default class UserSignIn {
     const userFound = await this.userRepository.findOneByEmail(user.email);
 
     try {
-      await this.cryptographic.compare(user.password, userFound.props.password);
+      await this.cryptographic.compare(user.password, userFound.password);
     } catch (error) {
       throw new UnauthorizatedError('password does not match');
     }
 
     try {
       const token = this.authentication.createAuthToken({
-        email: userFound.props.email,
-        id: userFound.props.id,
+        email: userFound.email,
+        id: userFound.id,
       });
 
-      return { user: userFound.props, token };
+      return { user: userFound, token };
     } catch (error) {
       throw new UnauthorizatedError(
         error instanceof Error
