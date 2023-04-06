@@ -1,7 +1,8 @@
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
-import { PetAd } from '@pet-ad/domain/pet-ad.entity';
+import { PetAd, PetAdProps } from '@pet-ad/domain/pet-ad.entity';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { CountryIso } from '@shared/domain/types/country';
+import { NotFoundError } from '@shared/application/errors/not-found.error';
 import {
   PaginationParams,
   PaginationResult,
@@ -14,20 +15,22 @@ export default class PrismaPetAdRepository implements PetAdRepository {
     this.prisma = dependencies.prisma;
   }
 
-  async create(petAd: PetAd['props']): Promise<PetAd> {
+  async findOneById(id: string): Promise<PetAd> {
+    const petAd = await this.prisma.client.petAd.findUnique({ where: { id } });
+
+    if (!petAd) {
+      throw new NotFoundError('Not found pet ad by id');
+    }
+
+    return new PetAd(petAd);
+  }
+
+  async create(petAd: PetAdProps): Promise<PetAd> {
     const petAdCreated = await this.prisma.client.petAd.create({
-      data: {
-        address: petAd.address.props,
-        name: petAd.name,
-        user: {
-          connect: {
-            id: petAd.userId,
-          },
-        },
-      },
+      data: petAd,
     });
 
-    return PetAd.instantiate(petAdCreated);
+    return new PetAd(petAdCreated);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -48,7 +51,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
 
   async findByCountry(
     filters: PaginationParams & { country: CountryIso } & Partial<
-        Pick<PetAd['props'], 'breedIds'>
+        Pick<PetAdProps, 'breedIds'>
       >
   ): Promise<PaginationResult<PetAd>> {
     const whereFilter = {
@@ -79,7 +82,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
     ]);
 
     return {
-      results: petAds.map(PetAd.instantiate),
+      results: petAds.map(petAd => new PetAd(petAd)),
       total: totalResults,
     };
   }
@@ -94,24 +97,19 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       },
     });
 
-    return petAds.map(PetAd.instantiate);
+    return petAds.map(petAd => new PetAd(petAd));
   }
 
   async updateOneById(
-    petAd: Pick<PetAd['props'], 'id'> & Partial<PetAd['props']>
+    petAd: Pick<PetAdProps, 'id'> & Partial<PetAdProps>
   ): Promise<PetAd> {
-    const { address, ...rest } = petAd;
-
     const updatedPetAd = await this.prisma.client.petAd.update({
       where: {
         id: petAd.id,
       },
-      data: {
-        ...rest,
-        ...(address && { address: address.props }),
-      },
+      data: petAd,
     });
 
-    return PetAd.instantiate(updatedPetAd);
+    return new PetAd(updatedPetAd);
   }
 }

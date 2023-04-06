@@ -38,6 +38,12 @@ export default class PetAdService {
     return petAds;
   }
 
+  async getOneById(id: Parameters<PetAdRepository['findOneById']>[0]) {
+    const petAd = await this.petAdRepository.findOneById(id);
+
+    return petAd;
+  }
+
   async getByUser(userId: Parameters<PetAdRepository['findByUser']>[0]) {
     const petAds = await this.petAdRepository.findByUser(userId);
 

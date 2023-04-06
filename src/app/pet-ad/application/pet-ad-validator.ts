@@ -1,4 +1,4 @@
-import { PetAd } from '@pet-ad/domain/pet-ad.entity';
+import { PetAdProps } from '@pet-ad/domain/pet-ad.entity';
 import { BreedRepository } from '@breed/domain/breed.repository';
 
 export default class PetAdValidator {
@@ -8,7 +8,7 @@ export default class PetAdValidator {
     this.breedRepository = dependencies.breedRepository;
   }
 
-  async validate(petAd: Partial<PetAd['props']>) {
+  async validate(petAd: Partial<PetAdProps>) {
     if (petAd.breedIds) {
       if (!petAd.breedIds?.length) {
         throw Error('breeds is empty');
