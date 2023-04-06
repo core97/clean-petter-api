@@ -1,12 +1,13 @@
 import { CountryIso } from '@shared/domain/types/country';
 
 export class Address {
-  constructor(
-    public props: {
-      city: string;
-      country: CountryIso;
-    }
-  ) {
+  city!: string;
+
+  country!: CountryIso;
+
+  constructor(props: Pick<Address, 'city' | 'country'>) {
     Object.assign(this, props);
   }
 }
+
+export type AddressProps = ConstructorParameters<typeof Address>[0];

@@ -6,7 +6,8 @@
       "@pet-ad/*": ["./app/pet-ad/*"],
       "@pet-ad-request/*": ["./app/pet-ad-request/*"],
       "@shared/*": ["./app/shared/*"],
-      "@user/*": ["./app/user/*"]
+      "@user/*": ["./app/user/*"],
+      "@visit/*": ["./app/visit/*"]
     },
     "outDir": "build"
   },

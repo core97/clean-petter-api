@@ -13,6 +13,7 @@ import { breedModules } from '@breed/infra/breed-module';
 import { petAdModules } from '@pet-ad/infra/pet-ad-module';
 import { petAdRequestModules } from '@pet-ad-request/infra/pet-ad-request-module';
 import { userModules } from '@user/infra/user-module';
+import { visitModules } from '@visit/infra/visit-module';
 
 export const container = awilix.createContainer({
   injectionMode: awilix.InjectionMode.PROXY,
@@ -41,6 +42,7 @@ export const setUpDependencies = () => {
       ...petAdModules,
       ...petAdRequestModules,
       ...userModules,
+      ...visitModules,
     ].map(module => [module.path, module.opts]),
     {
       formatName: (name, description) =>
