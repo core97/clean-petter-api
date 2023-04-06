@@ -1,4 +1,4 @@
-import { Breed } from '@breed/domain/breed.entity';
+import { Breed, BreedProps } from '@breed/domain/breed.entity';
 import { BreedRepository } from '@breed/domain/breed.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { PetType } from '@shared/domain/types/pet-type';
@@ -10,12 +10,12 @@ export default class PrismaBreedClient implements BreedRepository {
     this.prisma = dependencies.prisma;
   }
 
-  async create(breed: Omit<Breed['props'], 'petAds'>): Promise<Breed> {
+  async create(breed: Omit<BreedProps, 'petAds'>): Promise<Breed> {
     const createdBreed = await this.prisma.client.breed.create({
       data: breed,
     });
 
-    return Breed.instantiate(createdBreed);
+    return new Breed(createdBreed);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -32,7 +32,7 @@ export default class PrismaBreedClient implements BreedRepository {
       },
     });
 
-    return breeds.map(Breed.instantiate);
+    return breeds.map(breed => new Breed(breed));
   }
 
   async findOneByName(name: string): Promise<Breed> {
@@ -46,7 +46,7 @@ export default class PrismaBreedClient implements BreedRepository {
       throw Error('not found');
     }
 
-    return Breed.instantiate(breed);
+    return new Breed(breed);
   }
 
   async findOneById(breedId: string): Promise<Breed> {
@@ -60,11 +60,11 @@ export default class PrismaBreedClient implements BreedRepository {
       throw Error('not found');
     }
 
-    return Breed.instantiate(breed);
+    return new Breed(breed);
   }
 
   async updateOneById(
-    breed: Pick<Breed['props'], 'id'> & Partial<Omit<Breed['props'], 'petAds'>>
+    breed: Pick<BreedProps, 'id'> & Partial<Omit<BreedProps, 'petAds'>>
   ): Promise<Breed> {
     const updatedBreed = await this.prisma.client.breed.update({
       where: {
@@ -73,6 +73,6 @@ export default class PrismaBreedClient implements BreedRepository {
       data: breed,
     });
 
-    return Breed.instantiate(updatedBreed);
+    return new Breed(updatedBreed);
   }
 }
