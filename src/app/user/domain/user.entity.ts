@@ -10,6 +10,11 @@ export class User extends Entity {
 
   address?: Address | null;
 
+  preadoption?: {
+    formId: string;
+    responseId: string;
+  }
+
   constructor(
     props: Pick<
       User,

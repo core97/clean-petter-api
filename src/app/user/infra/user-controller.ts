@@ -5,6 +5,7 @@ import UserFinderOneByEmail from '@user/application/user-finder-one-by-email';
 import UserSignIn from '@user/application/user-sign-in';
 import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
+import UserPreadoptionFinder from '@user/application/user-preadoption-finder';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 import { ThirdParties } from '@shared/infra/third-parties';
 
@@ -19,6 +20,8 @@ export default class UserController extends ExpressHttpHandler {
 
   private userUpdaterOneByEmail: UserUpdaterOneByEmail;
 
+  private userPreadoptionFinder: UserPreadoptionFinder;
+
   private thirdParties: ThirdParties;
 
   constructor(deps: {
@@ -27,6 +30,7 @@ export default class UserController extends ExpressHttpHandler {
     userSignIn: UserSignIn;
     userSignUp: UserSignUp;
     userUpdaterOneByEmail: UserUpdaterOneByEmail;
+    userPreadoptionFinder: UserPreadoptionFinder;
     thirdParties: ThirdParties;
   }) {
     super();
@@ -35,6 +39,7 @@ export default class UserController extends ExpressHttpHandler {
     this.userSignIn = deps.userSignIn;
     this.userSignUp = deps.userSignUp;
     this.userUpdaterOneByEmail = deps.userUpdaterOneByEmail;
+    this.userPreadoptionFinder = deps.userPreadoptionFinder;
     this.thirdParties = deps.thirdParties;
   }
 
@@ -108,32 +113,23 @@ export default class UserController extends ExpressHttpHandler {
   }
 
   async peadoptionGet(req: Request, res: Response) {
-    /**
-     * TODO: crear un caso de uso
-     * - Hacer que el endpoint sea necesario la autenticacion
-     * - Obtener el usuario a traves del token
-     * - Obtener los anuncios del usuario y obtener el usuario que se ha interesado por el anuncio
-     * - Comprobar si el usuario que nos ha pasado como req.params.email esta dentro de los interesados del anuncio
-     * - Si es asi, obtener su formulario de preadopcion con user.preadoption
-     */
-
     if (!req.payload?.user) {
       return this.unauthorized(res);
     }
 
     if (
-      typeof req.query.formId !== 'string' ||
-      typeof req.query.responseId !== 'string' ||
-      typeof req.params.email !== 'string'
+      typeof req.query.preadoptionUser !== 'string' ||
+      typeof req.query.petAd !== 'string'
     ) {
       return this.invalidParams(res);
     }
 
-    const formResult = await this.thirdParties.typeform.getFormResult(
-      req.query.formId,
-      req.query.responseId
-    );
+    const preadoption = await this.userPreadoptionFinder.run({
+      petAd: req.query.petAd,
+      preadoptionUser: req.query.preadoptionUser,
+      requestingUser: req.payload.user.id,
+    });
 
-    return this.ok(res, formResult);
+    return this.ok(res, preadoption);
   }
 }

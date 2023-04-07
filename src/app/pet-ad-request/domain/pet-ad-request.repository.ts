@@ -5,4 +5,6 @@ import {
 import { Repository } from '@shared/domain/types/repository';
 
 export interface PetAdRequestRepository
-  extends Repository<PetAdRequest, PetAdRequestProps> {}
+  extends Repository<PetAdRequest, PetAdRequestProps> {
+  findByPetAd(petAdId: string): Promise<PetAdRequest[]>;
+}

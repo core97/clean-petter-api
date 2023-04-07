@@ -6,15 +6,15 @@ import { handleRequest } from '@shared/infra/server/express-handle-request';
 export const userRouter = Router();
 
 userRouter.get(
-  '/:email',
+  '/preadoption',
   authMiddleware,
-  handleRequest<UserController>('userController', 'userByEmailGet')
+  handleRequest<UserController>('userController', 'peadoptionGet')
 );
 
 userRouter.get(
-  '/:email/preadoption',
+  '/:email',
   authMiddleware,
-  handleRequest<UserController>('userController', 'peadoptionGet')
+  handleRequest<UserController>('userController', 'userByEmailGet')
 );
 
 userRouter.patch(
