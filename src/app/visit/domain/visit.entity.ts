@@ -1,8 +1,8 @@
 import { VisitStatus } from '@visit/domain/types/visit-status';
-import { EntityV2 } from '@shared/domain/types/entity';
+import { Entity } from '@shared/domain/types/entity';
 import { Address } from '@shared/domain/address.value-object';
 
-export class Visit extends EntityV2 {
+export class Visit extends Entity {
   address!: Address;
 
   userId!: string;

@@ -1,7 +1,7 @@
-import { EntityV2 } from '@shared/domain/types/entity';
+import { Entity } from '@shared/domain/types/entity';
 import { PetType } from '@shared/domain/types/pet-type';
 
-export class Breed extends EntityV2 {
+export class Breed extends Entity {
   name!: string;
 
   petType!: PetType;

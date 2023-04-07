@@ -1,8 +1,8 @@
-import { EntityV2 } from '@shared/domain/types/entity';
+import { Entity } from '@shared/domain/types/entity';
 
 export interface Repository<
-  TClass extends EntityV2,
-  TProps extends ConstructorParameters<typeof EntityV2>[0]
+  TClass extends Entity,
+  TProps extends ConstructorParameters<typeof Entity>[0]
 > {
   create(aggregateRoot: TProps): Promise<TClass>;
 

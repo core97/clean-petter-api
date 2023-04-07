@@ -1,7 +1,7 @@
 import { Address } from '@shared/domain/address.value-object';
-import { EntityV2 } from '@shared/domain/types/entity';
+import { Entity } from '@shared/domain/types/entity';
 
-export class User extends EntityV2 {
+export class User extends Entity {
   email!: string;
 
   name!: string;

@@ -1,7 +1,7 @@
 import { RequestStatus } from '@pet-ad-request/domain/types/request-status';
-import { EntityV2 } from '@shared/domain/types/entity';
+import { Entity } from '@shared/domain/types/entity';
 
-export class PetAdRequest extends EntityV2 {
+export class PetAdRequest extends Entity {
   interestedUserId!: string;
 
   petAdId!: string;
