@@ -1,10 +1,10 @@
 import { UserRepository } from '@user/domain/user.repository';
 
 export default class UserFinderOneByEmail {
-  private userRepository!: UserRepository;
+  private userRepository: UserRepository;
 
-  constructor(dependencies: { userRepository: UserRepository }) {
-    Object.assign(this, dependencies);
+  constructor(deps: { userRepository: UserRepository }) {
+    this.userRepository = deps.userRepository;
   }
 
   async run(email: Parameters<UserRepository['findOneByEmail']>[0]) {

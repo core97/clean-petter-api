@@ -5,21 +5,24 @@ import { Authentication } from '@shared/application/authentication';
 import { UnauthorizatedError } from '@shared/application/errors/unauthorizated.error';
 
 export default class UserSignIn {
-  private userRepository!: UserRepository;
+  private userRepository: UserRepository;
 
-  private userValidator!: UserValidator;
+  private userValidator: UserValidator;
 
-  private cryptographic!: Cryptographic;
+  private cryptographic: Cryptographic;
 
-  private authentication!: Authentication;
+  private authentication: Authentication;
 
-  constructor(dependencies: {
+  constructor(deps: {
     userRepository: UserRepository;
     userValidator: UserValidator;
     cryptographic: Cryptographic;
     authentication: Authentication;
   }) {
-    Object.assign(this, dependencies);
+    this.userRepository = deps.userRepository;
+    this.userValidator = deps.userValidator;
+    this.cryptographic = deps.cryptographic;
+    this.authentication = deps.authentication;
   }
 
   async run(user: { email: string; password: string }) {

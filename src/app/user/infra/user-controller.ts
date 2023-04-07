@@ -9,19 +9,19 @@ import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 import { ThirdParties } from '@shared/infra/third-parties';
 
 export default class UserController extends ExpressHttpHandler {
-  private userAccountDeleter!: UserAccountDeleter;
+  private userAccountDeleter: UserAccountDeleter;
 
-  private userFinderOneByEmail!: UserFinderOneByEmail;
+  private userFinderOneByEmail: UserFinderOneByEmail;
 
-  private userSignIn!: UserSignIn;
+  private userSignIn: UserSignIn;
 
-  private userSignUp!: UserSignUp;
+  private userSignUp: UserSignUp;
 
-  private userUpdaterOneByEmail!: UserUpdaterOneByEmail;
+  private userUpdaterOneByEmail: UserUpdaterOneByEmail;
 
-  private thirdParties!: ThirdParties;
+  private thirdParties: ThirdParties;
 
-  constructor(dependencies: {
+  constructor(deps: {
     userAccountDeleter: UserAccountDeleter;
     userFinderOneByEmail: UserFinderOneByEmail;
     userSignIn: UserSignIn;
@@ -30,7 +30,12 @@ export default class UserController extends ExpressHttpHandler {
     thirdParties: ThirdParties;
   }) {
     super();
-    Object.assign(this, dependencies);
+    this.userAccountDeleter = deps.userAccountDeleter;
+    this.userFinderOneByEmail = deps.userFinderOneByEmail;
+    this.userSignIn = deps.userSignIn;
+    this.userSignUp = deps.userSignUp;
+    this.userUpdaterOneByEmail = deps.userUpdaterOneByEmail;
+    this.thirdParties = deps.thirdParties;
   }
 
   async userAccountDelete(req: Request, res: Response) {

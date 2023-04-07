@@ -22,9 +22,9 @@ export default class PetAdValidator {
         petAd.breedIds.map(this.breedRepository.findOneById)
       );
 
-      const hasCatBreeds = breeds.some(breed => breed?.props.petType === 'CAT');
+      const hasCatBreeds = breeds.some(breed => breed?.petType === 'CAT');
 
-      const hasDogBreeds = breeds.some(breed => breed?.props.petType === 'DOG');
+      const hasDogBreeds = breeds.some(breed => breed?.petType === 'DOG');
 
       if (hasCatBreeds && hasDogBreeds) {
         throw Error('ad has breeds of different pets');

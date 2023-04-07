@@ -4,11 +4,12 @@ export interface Entity {
 }
 
 export abstract class EntityV2 {
-  id!: string;
+  id: string;
 
-  createdAt!: Date;
+  createdAt: Date;
 
   constructor(props: Pick<EntityV2, 'id' | 'createdAt'>) {
-    Object.assign(this, props);
+    this.id = props.id;
+    this.createdAt = props.createdAt;
   }
 }

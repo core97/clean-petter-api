@@ -1,10 +1,10 @@
 import { VisitRepository } from '@visit/domain/visit.repository';
 
 export default class VisitService {
-  private visitRepository!: VisitRepository;
+  private visitRepository: VisitRepository;
 
-  constructor(dependencies: { visitRepository: VisitRepository }) {
-    Object.assign(this, dependencies);
+  constructor(deps: { visitRepository: VisitRepository }) {
+    this.visitRepository = deps.visitRepository;
   }
 
   async create(visit: Parameters<VisitRepository['create']>[0]) {

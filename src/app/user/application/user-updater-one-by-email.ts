@@ -12,12 +12,14 @@ export default class UserUpdaterOneByEmail {
 
   private cryptographic!: Cryptographic;
 
-  constructor(dependencies: {
+  constructor(deps: {
     userRepository: UserRepository;
     userValidator: UserValidator;
     cryptographic: Cryptographic;
   }) {
-    Object.assign(this, dependencies);
+    this.userRepository = deps.userRepository;
+    this.userValidator = deps.userValidator;
+    this.cryptographic = deps.cryptographic;
   }
 
   async run(
