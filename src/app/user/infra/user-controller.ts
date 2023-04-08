@@ -118,15 +118,15 @@ export default class UserController extends ExpressHttpHandler {
     }
 
     if (
-      typeof req.query.preadoptionUser !== 'string' ||
-      typeof req.query.petAd !== 'string'
+      typeof req.params.userId !== 'string' ||
+      typeof req.params.petAdId !== 'string'
     ) {
       return this.invalidParams(res);
     }
 
     const preadoption = await this.userPreadoptionFinder.run({
-      petAd: req.query.petAd,
-      preadoptionUser: req.query.preadoptionUser,
+      petAd: req.params.petAdId,
+      preadoptionUser: req.params.userId,
       requestingUser: req.payload.user.id,
     });
 
