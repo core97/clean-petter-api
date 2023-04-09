@@ -17,6 +17,10 @@ export class PetAdRequest extends Entity {
     super(props);
     Object.assign(this, props);
   }
+
+  static toDomain(petAdRequest: PetAdRequestProps) {
+    return new PetAdRequest(petAdRequest);
+  }
 }
 
 export type PetAdRequestProps = ConstructorParameters<typeof PetAdRequest>[0];

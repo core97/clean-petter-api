@@ -15,6 +15,16 @@ export default class PrismaPetAdRequestRepository
     this.prisma = dependencies.prisma;
   }
 
+  async findByPetAd(petAdId: string): Promise<PetAdRequest[]> {
+    const results = await this.prisma.client.petAdRequest.findMany({
+      where: {
+        petAdId,
+      },
+    });
+
+    return results;
+  }
+
   async findOneById(id: string): Promise<PetAdRequest> {
     const petAdRequest = await this.prisma.client.petAdRequest.findUnique({
       where: { id },
@@ -24,7 +34,7 @@ export default class PrismaPetAdRequestRepository
       throw new NotFoundError('Not found pet ad request by id');
     }
 
-    return new PetAdRequest(petAdRequest);
+    return PetAdRequest.toDomain(petAdRequest);
   }
 
   async create(petAdRequest: PetAdRequestProps): Promise<PetAdRequest> {
@@ -34,7 +44,7 @@ export default class PrismaPetAdRequestRepository
       },
     });
 
-    return new PetAdRequest(petAdRequestCreated);
+    return PetAdRequest.toDomain(petAdRequestCreated);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -57,6 +67,6 @@ export default class PrismaPetAdRequestRepository
       },
     });
 
-    return new PetAdRequest(updatedPetAdRequest);
+    return PetAdRequest.toDomain(updatedPetAdRequest);
   }
 }

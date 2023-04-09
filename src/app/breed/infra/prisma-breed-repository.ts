@@ -15,7 +15,7 @@ export default class PrismaBreedClient implements BreedRepository {
       data: breed,
     });
 
-    return new Breed(createdBreed);
+    return Breed.toDomain(createdBreed);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -32,7 +32,7 @@ export default class PrismaBreedClient implements BreedRepository {
       },
     });
 
-    return breeds.map(breed => new Breed(breed));
+    return breeds.map(breed => Breed.toDomain(breed));
   }
 
   async findOneByName(name: string): Promise<Breed> {
@@ -46,7 +46,7 @@ export default class PrismaBreedClient implements BreedRepository {
       throw Error('not found');
     }
 
-    return new Breed(breed);
+    return Breed.toDomain(breed);
   }
 
   async findOneById(breedId: string): Promise<Breed> {
@@ -60,7 +60,7 @@ export default class PrismaBreedClient implements BreedRepository {
       throw Error('not found');
     }
 
-    return new Breed(breed);
+    return Breed.toDomain(breed);
   }
 
   async updateOneById(
@@ -73,6 +73,6 @@ export default class PrismaBreedClient implements BreedRepository {
       data: breed,
     });
 
-    return new Breed(updatedBreed);
+    return Breed.toDomain(updatedBreed);
   }
 }

@@ -14,6 +14,10 @@ export class Breed extends Entity {
     super(props);
     Object.assign(this, props);
   }
+
+  static toDomain(breed: BreedProps) {
+    return new Breed(breed);
+  }
 }
 
 export type BreedProps = ConstructorParameters<typeof Breed>[0];
