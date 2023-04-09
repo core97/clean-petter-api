@@ -13,8 +13,8 @@ export default class UserValidator {
     }
 
     if (
-      user.address?.geoJSON &&
-      !Address.isValidCoordinates(user.address.geoJSON)
+      user.addresses?.geoJSON &&
+      !Address.isValidCoordinates(user.addresses.geoJSON)
     ) {
       throw new ConflictError('invalid coordinates for user address');
     }

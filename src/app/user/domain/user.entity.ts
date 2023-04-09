@@ -1,5 +1,8 @@
-import { Address } from '@shared/domain/address.value-object';
+import { Address, AddressProps } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain/types/entity';
+import { Nullable } from '@shared/domain/types/type-utils';
+
+export type UserProps = ConstructorParameters<typeof User>[0];
 
 export class User extends Entity {
   email!: string;
@@ -8,17 +11,17 @@ export class User extends Entity {
 
   password!: string;
 
-  address?: Address | null;
+  addresses!: Address[];
 
-  preadoption?: {
+  preadoption!: Nullable<{
     formId: string;
     responseId: string;
-  }
+  }>;
 
   constructor(
     props: Pick<
       User,
-      'id' | 'createdAt' | 'address' | 'email' | 'name' | 'password'
+      'id' | 'createdAt' | 'addresses' | 'email' | 'name' | 'password'
     >
   ) {
     super(props);
@@ -26,7 +29,7 @@ export class User extends Entity {
   }
 
   getPublicData(isSameUser?: boolean) {
-    const { password, address, ...rest } = this;
+    const { password, addresses: address, ...rest } = this;
 
     return isSameUser ? { ...rest, address } : rest;
   }
@@ -48,6 +51,13 @@ export class User extends Entity {
 
     return typeof password === 'string' && passwordRegex.test(password);
   }
-}
 
-export type UserProps = ConstructorParameters<typeof User>[0];
+  static toDomain(
+    user: Omit<UserProps, 'addresses'> & { addresses: AddressProps[] }
+  ) {
+    return new User({
+      ...user,
+      addresses: user.addresses.map(address => new Address(address)),
+    });
+  }
+}

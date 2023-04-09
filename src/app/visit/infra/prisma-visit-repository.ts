@@ -17,7 +17,7 @@ export default class PrismaVisitClient implements VisitRepository {
       throw new NotFoundError('Not found visit by id');
     }
 
-    return result;
+    return Visit.toDomain(result);
   }
 
   async create(visit: VisitProps): Promise<Visit> {
@@ -25,7 +25,7 @@ export default class PrismaVisitClient implements VisitRepository {
       data: visit,
     });
 
-    return new Visit(createdVisit);
+    return Visit.toDomain(createdVisit);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -42,6 +42,6 @@ export default class PrismaVisitClient implements VisitRepository {
       data: visit,
     });
 
-    return new Visit(updatedVisit);
+    return Visit.toDomain(updatedVisit);
   }
 }

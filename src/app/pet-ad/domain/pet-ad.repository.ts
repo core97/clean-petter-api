@@ -8,7 +8,7 @@ import {
 } from '@shared/domain/types/pagination';
 
 export interface PetAdRepository extends Repository<PetAd, PetAdProps> {
-  deleteByUser(userId: User['props']['id']): Promise<void>;
+  deleteByUser(userId: User['id']): Promise<void>;
 
   findByCountry(
     filters: PaginationParams & { country: CountryIso } & Partial<

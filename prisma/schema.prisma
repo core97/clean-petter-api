@@ -46,7 +46,7 @@ model User {
   name         String
   petAds       PetAd[]
   password     String
-  address      Address?
+  addresses    Address[]
   preadoption  Preadoption?
   visits       Visit[]
   petAdRequest PetAdRequest[]
@@ -70,6 +70,7 @@ type Address {
   country      CountryIso
   placeId      String
   displayName  String
+  geoJSON      GeoJSON
   postalCode   Int
   url          String?
   streetNumber String?

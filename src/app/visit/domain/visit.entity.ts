@@ -1,6 +1,6 @@
 import { VisitStatus } from '@visit/domain/types/visit-status';
 import { Entity } from '@shared/domain/types/entity';
-import { Address } from '@shared/domain/address.value-object';
+import { Address, AddressProps } from '@shared/domain/address.value-object';
 
 export class Visit extends Entity {
   address!: Address;
@@ -30,6 +30,15 @@ export class Visit extends Entity {
   ) {
     super(props);
     Object.assign(this, props);
+  }
+
+  static toDomain(
+    visit: Omit<VisitProps, 'address'> & { address: AddressProps }
+  ) {
+    return new Visit({
+      ...visit,
+      address: new Address(visit.address),
+    });
   }
 }
 

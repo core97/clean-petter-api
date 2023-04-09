@@ -22,7 +22,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       throw new NotFoundError('Not found pet ad by id');
     }
 
-    return new PetAd(petAd);
+    return PetAd.toDomain(petAd);
   }
 
   async create(petAd: PetAdProps): Promise<PetAd> {
@@ -30,7 +30,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       data: petAd,
     });
 
-    return new PetAd(petAdCreated);
+    return PetAd.toDomain(petAdCreated);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -82,7 +82,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
     ]);
 
     return {
-      results: petAds.map(petAd => new PetAd(petAd)),
+      results: petAds.map(petAd => PetAd.toDomain(petAd)),
       total: totalResults,
     };
   }
@@ -97,7 +97,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       },
     });
 
-    return petAds.map(petAd => new PetAd(petAd));
+    return petAds.map(petAd => PetAd.toDomain(petAd));
   }
 
   async updateOneById(
@@ -110,6 +110,6 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       data: petAd,
     });
 
-    return new PetAd(updatedPetAd);
+    return PetAd.toDomain(updatedPetAd);
   }
 }

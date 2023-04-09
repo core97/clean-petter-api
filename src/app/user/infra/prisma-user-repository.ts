@@ -7,7 +7,7 @@ import { NotFoundError } from '@shared/application/errors/not-found.error';
 export default class PrismaUserClient implements UserRepository {
   private prisma: Prisma;
 
-  constructor(dependencies: { prisma: Prisma, logger: Logger }) {
+  constructor(dependencies: { prisma: Prisma; logger: Logger }) {
     this.prisma = dependencies.prisma;
   }
 
@@ -28,7 +28,7 @@ export default class PrismaUserClient implements UserRepository {
       throw new NotFoundError('not found user by id');
     }
 
-    return new User(user);
+    return User.toDomain(user);
   }
 
   async updateOneById(
@@ -41,7 +41,7 @@ export default class PrismaUserClient implements UserRepository {
       data: user,
     });
 
-    return new User(updatedUser);
+    return User.toDomain(updatedUser);
   }
 
   async create(user: Pick<UserProps, 'email' | 'name' | 'password'>) {
@@ -53,7 +53,7 @@ export default class PrismaUserClient implements UserRepository {
       },
     });
 
-    return new User(userCreated);
+    return User.toDomain(userCreated);
   }
 
   async deleteOneByEmail(email: UserProps['email']) {
@@ -73,7 +73,7 @@ export default class PrismaUserClient implements UserRepository {
       throw new NotFoundError('not found user by email');
     }
 
-    return new User(user);
+    return User.toDomain(user);
   }
 
   async updateOneByEmail(
@@ -87,6 +87,6 @@ export default class PrismaUserClient implements UserRepository {
       data: user,
     });
 
-    return new User(updatedUser);
+    return User.toDomain(updatedUser);
   }
 }

@@ -1,4 +1,5 @@
 import { CountryIso } from '@shared/domain/types/country';
+import { Nullable } from '@shared/domain/types/type-utils';
 
 export class Address {
   city!: string;
@@ -8,7 +9,7 @@ export class Address {
   displayName!: string;
 
   geoJSON!: {
-    type: 'Point';
+    type: string;
     coordinates: number[]; // [lng, lat]
   };
 
@@ -16,9 +17,9 @@ export class Address {
 
   postalCode!: number;
 
-  streetNumber?: string;
+  streetNumber!: Nullable<string>;
 
-  url?: string;
+  url!: Nullable<string>;
 
   constructor(
     props: Pick<
@@ -45,7 +46,9 @@ export class Address {
 
   static isValidCoordinates(geoJSON: Address['geoJSON']): boolean {
     return (
-      Array.isArray(geoJSON?.coordinates) && geoJSON?.coordinates.length === 2
+      geoJSON.type === 'Point' &&
+      Array.isArray(geoJSON?.coordinates) &&
+      geoJSON?.coordinates.length === 2
     );
   }
 }

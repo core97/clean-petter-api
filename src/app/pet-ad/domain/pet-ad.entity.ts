@@ -1,4 +1,4 @@
-import { Address } from '@shared/domain/address.value-object';
+import { Address, AddressProps } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain/types/entity';
 
 export class PetAd extends Entity {
@@ -18,6 +18,15 @@ export class PetAd extends Entity {
   ) {
     super(props);
     Object.assign(this, props);
+  }
+
+  static toDomain(
+    petAd: Omit<PetAdProps, 'address'> & { address: AddressProps }
+  ) {
+    return new PetAd({
+      ...petAd,
+      address: new Address(petAd.address),
+    });
   }
 }
 
