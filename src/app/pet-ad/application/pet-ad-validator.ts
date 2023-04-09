@@ -1,5 +1,7 @@
 import { PetAdProps } from '@pet-ad/domain/pet-ad.entity';
 import { BreedRepository } from '@breed/domain/breed.repository';
+import { ConflictError } from '@shared/application/errors/conflict.error';
+import { Address } from '@shared/domain/address.value-object';
 
 export default class PetAdValidator {
   private breedRepository: BreedRepository;
@@ -27,7 +29,14 @@ export default class PetAdValidator {
       const hasDogBreeds = breeds.some(breed => breed?.petType === 'DOG');
 
       if (hasCatBreeds && hasDogBreeds) {
-        throw Error('ad has breeds of different pets');
+        throw Error('pet ad has breeds of different pets');
+      }
+
+      if (
+        petAd.address?.geoJSON &&
+        !Address.isValidCoordinates(petAd.address.geoJSON)
+      ) {
+        throw new ConflictError('invalid coordinates for pet ad address');
       }
     }
   }

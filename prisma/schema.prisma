@@ -66,8 +66,18 @@ model Visit {
 }
 
 type Address {
-  city    String
-  country CountryIso
+  city         String
+  country      CountryIso
+  placeId      String
+  displayName  String
+  postalCode   Int
+  url          String?
+  streetNumber String?
+}
+
+type GeoJSON {
+  type        String @default("Point")
+  coordinates Int[]
 }
 
 type Preadoption {
