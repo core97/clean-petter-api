@@ -7,7 +7,6 @@ import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
 import UserPreadoptionFinder from '@user/application/user-preadoption-finder';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
-import { ThirdParties } from '@shared/infra/third-parties';
 
 export default class UserController extends ExpressHttpHandler {
   private userAccountDeleter: UserAccountDeleter;
@@ -22,8 +21,6 @@ export default class UserController extends ExpressHttpHandler {
 
   private userPreadoptionFinder: UserPreadoptionFinder;
 
-  private thirdParties: ThirdParties;
-
   constructor(deps: {
     userAccountDeleter: UserAccountDeleter;
     userFinderOneByEmail: UserFinderOneByEmail;
@@ -31,7 +28,6 @@ export default class UserController extends ExpressHttpHandler {
     userSignUp: UserSignUp;
     userUpdaterOneByEmail: UserUpdaterOneByEmail;
     userPreadoptionFinder: UserPreadoptionFinder;
-    thirdParties: ThirdParties;
   }) {
     super();
     this.userAccountDeleter = deps.userAccountDeleter;
@@ -40,7 +36,6 @@ export default class UserController extends ExpressHttpHandler {
     this.userSignUp = deps.userSignUp;
     this.userUpdaterOneByEmail = deps.userUpdaterOneByEmail;
     this.userPreadoptionFinder = deps.userPreadoptionFinder;
-    this.thirdParties = deps.thirdParties;
   }
 
   async userAccountDelete(req: Request, res: Response) {
