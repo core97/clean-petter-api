@@ -1,7 +1,8 @@
+import { PrismaClient, Prisma as PrismaModule } from '@prisma/client';
 import PetAdValidator from '@pet-ad/application/pet-ad-validator';
 import UserValidator from '@user/application/user-validator';
 import VisitValidator from '@visit/application/visit-validator';
-import { PrismaClient, Prisma as PrismaModule } from '@prisma/client';
+import { InternalServerError } from '@shared/application/errors/internal-server.error';
 
 export class Prisma {
   client: PrismaClient;
@@ -18,7 +19,20 @@ export class Prisma {
   }
 
   private setMiddlewares() {
+    this.setMethodsAllowedMiddleware();
     this.setValidatorMiddleware();
+  }
+
+  private setMethodsAllowedMiddleware() {
+    this.client.$use(async (params, next) => {
+      if (params.model && this.isAllowedAction(params.action)) {
+        throw new InternalServerError(
+          `"${params.action}" action is not allowed for Prisma`
+        );
+      }
+
+      return next(params);
+    });
   }
 
   private setValidatorMiddleware() {
@@ -31,14 +45,7 @@ export class Prisma {
     };
 
     this.client.$use(async (params, next) => {
-      if (
-        params.model &&
-        (params.action === 'create' ||
-          params.action === 'createMany' ||
-          params.action === 'update' ||
-          params.action === 'updateMany' ||
-          params.action === 'upsert')
-      ) {
+      if (params.model && this.isAllowedAction(params.action)) {
         const modelName = params.model;
 
         if (Array.isArray(params.args.data)) {
@@ -56,5 +63,11 @@ export class Prisma {
 
       return next(params);
     });
+  }
+
+  private isAllowedAction(prismaAction: PrismaModule.PrismaAction) {
+    const notAllowedActions: PrismaModule.PrismaAction[] = ['createMany'];
+
+    return notAllowedActions.every(action => action !== prismaAction);
   }
 }
