@@ -2,8 +2,6 @@ import { Address, AddressProps } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain/types/entity';
 import { Nullable } from '@shared/domain/types/type-utils';
 
-export type UserProps = ConstructorParameters<typeof User>[0];
-
 export class User extends Entity {
   email!: string;
 
@@ -61,3 +59,5 @@ export class User extends Entity {
     });
   }
 }
+
+export type UserProps = ConstructorParameters<typeof User>[0];

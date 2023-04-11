@@ -3,11 +3,20 @@ import { UserRepository } from '@user/domain/user.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { Logger } from '@shared/application/logger';
 import { NotFoundError } from '@shared/application/errors/not-found.error';
+import { PrismaRepository } from '@shared/infra/persistence/prisma-repository';
 
-export default class PrismaUserClient implements UserRepository {
+export default class PrismaUserClient
+  extends PrismaRepository<User>
+  implements UserRepository
+{
   private prisma: Prisma;
 
   constructor(dependencies: { prisma: Prisma; logger: Logger }) {
+    super({
+      toDomain: User.toDomain,
+      modelName: 'user',
+      prisma: dependencies.prisma,
+    });
     this.prisma = dependencies.prisma;
   }
 

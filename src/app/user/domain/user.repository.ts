@@ -8,6 +8,6 @@ export interface UserRepository extends Repository<User, UserProps> {
 
   updateOneByEmail(
     user: Pick<UserProps, 'email'> &
-      Partial<Pick<UserProps, 'address' | 'name' | 'password'>>
+      Partial<Pick<UserProps, 'addresses' | 'name' | 'password'>>
   ): Promise<User>;
 }
