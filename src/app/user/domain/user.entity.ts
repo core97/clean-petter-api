@@ -19,17 +19,26 @@ export class User extends Entity {
   constructor(
     props: Pick<
       User,
-      'id' | 'createdAt' | 'addresses' | 'email' | 'name' | 'password'
-    >
+      'id' | 'createdAt' | 'email' | 'name' | 'password' | 'preadoption'
+    > & {
+      addresses: AddressProps[];
+    }
   ) {
     super(props);
-    Object.assign(this, props);
+    this.email = props.email;
+    this.name = props.name;
+    this.password = props.password;
+    this.addresses = props.addresses.map(address => new Address(address));
+    this.preadoption = props.preadoption;
   }
 
   getPublicData(isSameUser?: boolean) {
-    const { password, addresses: address, ...rest } = this;
+    const { password, addresses, ...rest } = this;
 
-    return isSameUser ? { ...rest, address } : rest;
+    return {
+      ...rest,
+      ...(isSameUser && { addresses }),
+    };
   }
 
   static isValidEmail(email: unknown) {
@@ -37,26 +46,17 @@ export class User extends Entity {
     return typeof email === 'string' && emailRegex.test(email);
   }
 
+  /**
+   * - minimum length of 8 characters
+   * - at least one special character
+   * - at least one capital letter
+   * - at least one number
+   */
   static isValidPassword(password: unknown) {
-    /**
-     * - minimum length of 8 characters
-     * - at least one special character
-     * - at least one capital letter
-     * - at least one number
-     */
     const passwordRegex =
       /^(?=.*[!@#$%^&*()_+\\=[\]{};':"\\|,.<>?])(?=.*[A-Z])(?=.*[0-9]).{8,}$/gm;
 
     return typeof password === 'string' && passwordRegex.test(password);
-  }
-
-  static toDomain(
-    user: Omit<UserProps, 'addresses'> & { addresses: AddressProps[] }
-  ) {
-    return new User({
-      ...user,
-      addresses: user.addresses.map(address => new Address(address)),
-    });
   }
 }
 

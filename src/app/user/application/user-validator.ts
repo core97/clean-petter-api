@@ -5,18 +5,19 @@ import { ConflictError } from '@shared/application/errors/conflict.error';
 export default class UserValidator {
   validate(user: Partial<UserProps>) {
     if (user.email && !User.isValidEmail(user.email)) {
-      throw new ConflictError('email is invalid');
+      throw new ConflictError('Email is invalid');
     }
 
     if (user.password && !User.isValidPassword(user.password)) {
-      throw new ConflictError('password is invalid');
+      throw new ConflictError('Password is invalid');
     }
 
-    if (
-      user.addresses?.geoJSON &&
-      !Address.isValidCoordinates(user.addresses.geoJSON)
-    ) {
-      throw new ConflictError('invalid coordinates for user address');
+    const areValidCoordinates = !!user.addresses &&  user.addresses.every(address =>
+      Address.isValidCoordinates(address.geoJSON)
+    );
+
+    if (!areValidCoordinates) {
+      throw new ConflictError('Invalid coordinates for user addresses');
     }
   }
 }

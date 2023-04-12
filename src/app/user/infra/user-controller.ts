@@ -76,7 +76,7 @@ export default class UserController extends ExpressHttpHandler {
       httpOnly: true,
     });
 
-    return this.ok(res, user);
+    return this.ok(res, user.getPublicData(true));
   }
 
   async signUpPost(req: Request, res: Response) {
@@ -89,7 +89,7 @@ export default class UserController extends ExpressHttpHandler {
       httpOnly: true,
     });
 
-    return this.ok(res, user);
+    return this.ok(res, user.getPublicData(true));
   }
 
   async userPatch(req: Request, res: Response) {

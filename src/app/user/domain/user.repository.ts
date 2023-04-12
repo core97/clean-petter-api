@@ -7,7 +7,6 @@ export interface UserRepository extends Repository<User, UserProps> {
   findOneByEmail(email: UserProps['email']): Promise<User>;
 
   updateOneByEmail(
-    user: Pick<UserProps, 'email'> &
-      Partial<Pick<UserProps, 'addresses' | 'name' | 'password'>>
+    user: Pick<UserProps, 'email'> & Partial<UserProps>
   ): Promise<User>;
 }

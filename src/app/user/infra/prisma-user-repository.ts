@@ -6,63 +6,18 @@ import { NotFoundError } from '@shared/application/errors/not-found.error';
 import { PrismaRepository } from '@shared/infra/persistence/prisma-repository';
 
 export default class PrismaUserClient
-  extends PrismaRepository<User>
+  extends PrismaRepository<User, UserProps>
   implements UserRepository
 {
   private prisma: Prisma;
 
   constructor(dependencies: { prisma: Prisma; logger: Logger }) {
     super({
-      toDomain: User.toDomain,
+      classConstructor: User,
       modelName: 'user',
       prisma: dependencies.prisma,
     });
     this.prisma = dependencies.prisma;
-  }
-
-  async deleteOneById(id: string): Promise<void> {
-    await this.prisma.client.user.delete({
-      where: { id },
-    });
-  }
-
-  async findOneById(id: string): Promise<User> {
-    const user = await this.prisma.client.user.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundError('not found user by id');
-    }
-
-    return User.toDomain(user);
-  }
-
-  async updateOneById(
-    user: Pick<UserProps, 'id'> & Partial<UserProps>
-  ): Promise<User> {
-    const updatedUser = await this.prisma.client.user.update({
-      where: {
-        email: user.email,
-      },
-      data: user,
-    });
-
-    return User.toDomain(updatedUser);
-  }
-
-  async create(user: Pick<UserProps, 'email' | 'name' | 'password'>) {
-    const userCreated = await this.prisma.client.user.create({
-      data: {
-        email: user.email,
-        name: user.name,
-        password: user.password,
-      },
-    });
-
-    return User.toDomain(userCreated);
   }
 
   async deleteOneByEmail(email: UserProps['email']) {
@@ -82,7 +37,7 @@ export default class PrismaUserClient
       throw new NotFoundError('not found user by email');
     }
 
-    return User.toDomain(user);
+    return new User(user);
   }
 
   async updateOneByEmail(
@@ -96,6 +51,6 @@ export default class PrismaUserClient
       data: user,
     });
 
-    return User.toDomain(updatedUser);
+    return new User(updatedUser);
   }
 }
