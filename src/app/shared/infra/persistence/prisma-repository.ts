@@ -17,11 +17,9 @@ export class PrismaRepository<
 > implements Repository<TEntity, TProps>
 {
   constructor(
-    private deps: {
-      classConstructor: new (...args: any) => TEntity;
-      modelName: ModelName;
-      prisma: Prisma;
-    }
+    private classConstructor: new (...args: any) => TEntity,
+    protected modelName: ModelName,
+    protected prisma: Prisma
   ) {}
 
   async create(aggregateRoot: TProps): Promise<TEntity> {
@@ -29,7 +27,7 @@ export class PrismaRepository<
       data: aggregateRoot,
     });
 
-    return new this.deps.classConstructor(result);
+    return new this.classConstructor(result);
   }
 
   async deleteOneById(id: string): Promise<void> {
@@ -48,7 +46,7 @@ export class PrismaRepository<
       data: aggregateRoot,
     });
 
-    return new this.deps.classConstructor(result);
+    return new this.classConstructor(result);
   }
 
   async findOneById(id: string) {
@@ -57,14 +55,14 @@ export class PrismaRepository<
     });
 
     if (!result) {
-      throw new NotFoundError(`Not found "${this.deps.modelName}" by id`);
+      throw new NotFoundError(`Not found "${this.modelName}" by id`);
     }
 
-    return new this.deps.classConstructor(result);
+    return new this.classConstructor(result);
   }
 
   private getModel() {
-    const model = this.deps.prisma.client[this.deps.modelName];
+    const model = this.prisma.client[this.modelName];
     const methods: (keyof typeof model)[] = [
       'findFirst',
       'update',
@@ -74,13 +72,13 @@ export class PrismaRepository<
 
     if (
       typeof model === 'object' &&
-      methods.every(method => typeof model[method] === 'function')
+      methods.some(method => typeof model[method] !== 'function')
     ) {
-      return model as any;
+      throw new InternalServerError(
+        `No exist "${this.modelName}" model in Prisma`
+      );
     }
 
-    throw new InternalServerError(
-      `No exist "${this.deps.modelName}" model in Prisma`
-    );
+    return model as any;
   }
 }
