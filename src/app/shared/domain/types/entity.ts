@@ -8,3 +8,5 @@ export abstract class Entity {
     this.createdAt = props.createdAt;
   }
 }
+
+export type EntityProps = ConstructorParameters<typeof Entity>[0];
