@@ -6,18 +6,24 @@ export class PetAd extends Entity {
 
   breedIds: string[];
 
+  dateBirth: Date;
+
   name: string;
 
   userId: string;
 
   constructor(
-    props: Pick<PetAd, 'id' | 'createdAt' | 'breedIds' | 'name' | 'userId'> & {
+    props: Pick<
+      PetAd,
+      'id' | 'createdAt' | 'breedIds' | 'dateBirth' | 'name' | 'userId'
+    > & {
       address: AddressProps;
     }
   ) {
     super(props);
     this.address = new Address(props.address);
     this.breedIds = props.breedIds;
+    this.dateBirth = props.dateBirth;
     this.name = props.name;
     this.userId = props.userId;
   }

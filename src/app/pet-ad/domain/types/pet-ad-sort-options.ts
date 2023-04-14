@@ -1,0 +1,5 @@
+export enum PetAdSortOptions {
+  RELEVANCE = 'RELEVANCE',
+  CREATED_AT_DESC = 'CREATED_AT_DESC',
+  CREATED_AT_ASC = 'CREATED_AT_ASC',
+}

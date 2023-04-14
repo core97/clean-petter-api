@@ -22,6 +22,7 @@ model PetAd {
   breeds    Breed[]        @relation(fields: [breedIds], references: [id])
   breedIds  String[]       @db.ObjectId
   createdAt DateTime       @default(now())
+  dateBirth DateTime
   name      String
   user      User           @relation(fields: [userId], references: [id])
   userId    String         @db.ObjectId

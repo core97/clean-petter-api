@@ -1,7 +1,10 @@
+import { Prisma as PrismaClient } from '@prisma/client';
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 import { PetAd, PetAdProps } from '@pet-ad/domain/pet-ad.entity';
+import { PetAdSortOptions } from '@pet-ad/domain/types/pet-ad-sort-options';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { CountryIso } from '@shared/domain/types/country';
+import { PetType } from '@shared/domain/types/pet-type';
 import { PrismaRepository } from '@shared/infra/persistence/prisma-repository';
 import {
   PaginationParams,
@@ -25,14 +28,22 @@ export default class PrismaPetAdRepository
   }
 
   async findByCountry(
-    filters: PaginationParams & { country: CountryIso } & Partial<
-        Pick<PetAdProps, 'breedIds'>
-      >
+    filters: Partial<Pick<PetAd, 'breedIds'>> & {
+      country: CountryIso;
+      petType: PetType;
+      pagination?: PaginationParams;
+      sortBy?: PetAdSortOptions;
+    }
   ): Promise<PaginationResult<PetAd>> {
-    const whereFilter = {
+    const whereFilter: PrismaClient.PetAdWhereInput = {
       address: {
         is: {
           country: filters.country,
+        },
+      },
+      breeds: {
+        every: {
+          petType: filters.petType,
         },
       },
       ...(filters.breedIds && {
@@ -42,17 +53,26 @@ export default class PrismaPetAdRepository
       }),
     };
 
+    const sortFilter: Record<PetAdSortOptions, Record<string, string>> = {
+      [PetAdSortOptions.CREATED_AT_ASC]: {
+        createdAt: 'asc',
+      },
+      [PetAdSortOptions.CREATED_AT_DESC]: {
+        createdAt: 'desc',
+      },
+      [PetAdSortOptions.RELEVANCE]: {
+        createdAt: 'asc',
+        dateBirth: 'dec',
+      },
+    };
+
     const [totalResults, petAds] = await Promise.all([
       this.prisma.client.petAd.count({
         where: whereFilter,
       }),
       this.prisma.client.petAd.findMany({
         where: whereFilter,
-        skip: filters.limit * filters.page,
-        take: filters.limit,
-        orderBy: {
-          createdAt: 'desc',
-        },
+        ...(filters.sortBy && { orderBy: sortFilter[filters.sortBy] }),
       }),
     ]);
 
