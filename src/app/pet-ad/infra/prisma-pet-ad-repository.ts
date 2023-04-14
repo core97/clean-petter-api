@@ -2,43 +2,18 @@ import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 import { PetAd, PetAdProps } from '@pet-ad/domain/pet-ad.entity';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { CountryIso } from '@shared/domain/types/country';
-import { NotFoundError } from '@shared/application/errors/not-found.error';
+import { PrismaRepository } from '@shared/infra/persistence/prisma-repository';
 import {
   PaginationParams,
   PaginationResult,
 } from '@shared/domain/types/pagination';
 
-export default class PrismaPetAdRepository implements PetAdRepository {
-  private prisma: Prisma;
-
-  constructor(dependencies: { prisma: Prisma }) {
-    this.prisma = dependencies.prisma;
-  }
-
-  async findOneById(id: string): Promise<PetAd> {
-    const petAd = await this.prisma.client.petAd.findUnique({ where: { id } });
-
-    if (!petAd) {
-      throw new NotFoundError('Not found pet ad by id');
-    }
-
-    return PetAd.toDomain(petAd);
-  }
-
-  async create(petAd: PetAdProps): Promise<PetAd> {
-    const petAdCreated = await this.prisma.client.petAd.create({
-      data: petAd,
-    });
-
-    return PetAd.toDomain(petAdCreated);
-  }
-
-  async deleteOneById(id: string): Promise<void> {
-    await this.prisma.client.petAd.delete({
-      where: {
-        id,
-      },
-    });
+export default class PrismaPetAdRepository
+  extends PrismaRepository<PetAd, PetAdProps>
+  implements PetAdRepository
+{
+  constructor(deps: { prisma: Prisma }) {
+    super(PetAd, 'petAd', deps.prisma);
   }
 
   async deleteByUser(userId: string): Promise<void> {
@@ -82,7 +57,7 @@ export default class PrismaPetAdRepository implements PetAdRepository {
     ]);
 
     return {
-      results: petAds.map(petAd => PetAd.toDomain(petAd)),
+      results: petAds.map(petAd => new PetAd(petAd)),
       total: totalResults,
     };
   }
@@ -97,19 +72,6 @@ export default class PrismaPetAdRepository implements PetAdRepository {
       },
     });
 
-    return petAds.map(petAd => PetAd.toDomain(petAd));
-  }
-
-  async updateOneById(
-    petAd: Pick<PetAdProps, 'id'> & Partial<PetAdProps>
-  ): Promise<PetAd> {
-    const updatedPetAd = await this.prisma.client.petAd.update({
-      where: {
-        id: petAd.id,
-      },
-      data: petAd,
-    });
-
-    return PetAd.toDomain(updatedPetAd);
+    return petAds.map(petAd => new PetAd(petAd));
   }
 }

@@ -2,31 +2,24 @@ import { Address, AddressProps } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain/types/entity';
 
 export class PetAd extends Entity {
-  address!: Address;
+  address: Address;
 
-  breedIds!: string[];
+  breedIds: string[];
 
-  name!: string;
+  name: string;
 
-  userId!: string;
+  userId: string;
 
   constructor(
-    props: Pick<
-      PetAd,
-      'id' | 'createdAt' | 'address' | 'breedIds' | 'name' | 'userId'
-    >
+    props: Pick<PetAd, 'id' | 'createdAt' | 'breedIds' | 'name' | 'userId'> & {
+      address: AddressProps;
+    }
   ) {
     super(props);
-    Object.assign(this, props);
-  }
-
-  static toDomain(
-    petAd: Omit<PetAdProps, 'address'> & { address: AddressProps }
-  ) {
-    return new PetAd({
-      ...petAd,
-      address: new Address(petAd.address),
-    });
+    this.address = new Address(props.address);
+    this.breedIds = props.breedIds;
+    this.name = props.name;
+    this.userId = props.userId;
   }
 }
 

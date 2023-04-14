@@ -3,42 +3,37 @@ import { Entity } from '@shared/domain/types/entity';
 import { Address, AddressProps } from '@shared/domain/address.value-object';
 
 export class Visit extends Entity {
-  address!: Address;
+  address: Address;
 
-  userId!: string;
+  userId: string;
 
-  status!: VisitStatus;
+  status: VisitStatus;
 
-  date!: Date;
+  date: Date;
 
-  userIdToConfirm!: string;
+  userIdToConfirm: string;
 
-  petAdRequestId!: string;
+  petAdRequestId: string;
 
   constructor(
     props: Pick<
       Visit,
       | 'id'
       | 'createdAt'
-      | 'address'
       | 'date'
       | 'petAdRequestId'
       | 'status'
       | 'userId'
       | 'userIdToConfirm'
-    >
+    > & { address: AddressProps }
   ) {
     super(props);
-    Object.assign(this, props);
-  }
-
-  static toDomain(
-    visit: Omit<VisitProps, 'address'> & { address: AddressProps }
-  ) {
-    return new Visit({
-      ...visit,
-      address: new Address(visit.address),
-    });
+    this.address = new Address(props.address);
+    this.userId = props.userId;
+    this.status = props.status;
+    this.date = props.date;
+    this.userIdToConfirm = props.userIdToConfirm;
+    this.petAdRequestId = props.petAdRequestId;
   }
 }
 

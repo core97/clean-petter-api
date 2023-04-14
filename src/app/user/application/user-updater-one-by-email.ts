@@ -6,29 +6,21 @@ import { UnprocessableEntityError } from '@shared/application/errors/unprocessab
 import { UnauthorizatedError } from '@shared/application/errors/unauthorizated.error';
 
 export default class UserUpdaterOneByEmail {
-  private userRepository!: UserRepository;
-
-  private userValidator!: UserValidator;
-
-  private cryptographic!: Cryptographic;
-
-  constructor(deps: {
-    userRepository: UserRepository;
-    userValidator: UserValidator;
-    cryptographic: Cryptographic;
-  }) {
-    this.userRepository = deps.userRepository;
-    this.userValidator = deps.userValidator;
-    this.cryptographic = deps.cryptographic;
-  }
+  constructor(
+    private deps: {
+      userRepository: UserRepository;
+      userValidator: UserValidator;
+      cryptographic: Cryptographic;
+    }
+  ) {}
 
   async run(
     user: Parameters<UserRepository['updateOneByEmail']>[0],
     options: { oldPassword?: string } = {}
   ) {
-    this.userValidator.validate(user);
+    this.deps.userValidator.validate(user);
 
-    const userFound = await this.userRepository.findOneByEmail(user.email);
+    const userFound = await this.deps.userRepository.findOneByEmail(user.email);
 
     const isPasswordUpdate =
       user.password && user.password !== userFound.password;
@@ -42,18 +34,20 @@ export default class UserUpdaterOneByEmail {
     let newPasswordEncrypted: string | undefined;
     if (user.password && isPasswordUpdate && options.oldPassword) {
       try {
-        await this.cryptographic.compare(
+        await this.deps.cryptographic.compare(
           options.oldPassword,
           userFound.password
         );
 
-        newPasswordEncrypted = await this.cryptographic.hash(user.password);
+        newPasswordEncrypted = await this.deps.cryptographic.hash(
+          user.password
+        );
       } catch (error) {
         throw new UnauthorizatedError('password does not match');
       }
     }
 
-    const updatedUser = await this.userRepository.updateOneByEmail({
+    const updatedUser = await this.deps.userRepository.updateOneByEmail({
       ...user,
       ...(user.name && { name: StringUtils.capitalizeWords(user.name) }),
       ...(newPasswordEncrypted && { password: newPasswordEncrypted }),

@@ -3,15 +3,15 @@ import { Entity } from '@shared/domain/types/entity';
 import { Nullable } from '@shared/domain/types/type-utils';
 
 export class User extends Entity {
-  email!: string;
+  email: string;
 
-  name!: string;
+  name: string;
 
-  password!: string;
+  password: string;
 
-  addresses!: Address[];
+  addresses: Address[];
 
-  preadoption!: Nullable<{
+  preadoption: Nullable<{
     formId: string;
     responseId: string;
   }>;

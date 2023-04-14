@@ -2,11 +2,11 @@ import { RequestStatus } from '@pet-ad-request/domain/types/request-status';
 import { Entity } from '@shared/domain/types/entity';
 
 export class PetAdRequest extends Entity {
-  interestedUserId!: string;
+  interestedUserId: string;
 
-  petAdId!: string;
+  petAdId: string;
 
-  status!: RequestStatus;
+  status: RequestStatus;
 
   constructor(
     props: Pick<
@@ -15,11 +15,9 @@ export class PetAdRequest extends Entity {
     >
   ) {
     super(props);
-    Object.assign(this, props);
-  }
-
-  static toDomain(petAdRequest: PetAdRequestProps) {
-    return new PetAdRequest(petAdRequest);
+    this.interestedUserId = props.interestedUserId;
+    this.petAdId = props.petAdId;
+    this.status = props.status;
   }
 }
 

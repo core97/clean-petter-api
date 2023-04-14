@@ -1,25 +1,16 @@
 import { Breed, BreedProps } from '@breed/domain/breed.entity';
 import { BreedRepository } from '@breed/domain/breed.repository';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
+import { NotFoundError } from '@shared/application/errors/not-found.error';
+import { PrismaRepository } from '@shared/infra/persistence/prisma-repository';
 import { PetType } from '@shared/domain/types/pet-type';
 
-export default class PrismaBreedClient implements BreedRepository {
-  private prisma: Prisma;
-
-  constructor(dependencies: { prisma: Prisma }) {
-    this.prisma = dependencies.prisma;
-  }
-
-  async create(breed: Omit<BreedProps, 'petAds'>): Promise<Breed> {
-    const createdBreed = await this.prisma.client.breed.create({
-      data: breed,
-    });
-
-    return Breed.toDomain(createdBreed);
-  }
-
-  async deleteOneById(id: string): Promise<void> {
-    await this.prisma.client.breed.delete({ where: { id } });
+export default class PrismaBreedClient
+  extends PrismaRepository<Breed, BreedProps>
+  implements BreedRepository
+{
+  constructor(deps: { prisma: Prisma }) {
+    super(Breed, 'breed', deps.prisma);
   }
 
   async findByPetType(petType: PetType): Promise<Breed[]> {
@@ -32,7 +23,7 @@ export default class PrismaBreedClient implements BreedRepository {
       },
     });
 
-    return breeds.map(breed => Breed.toDomain(breed));
+    return breeds.map(breed => new Breed(breed));
   }
 
   async findOneByName(name: string): Promise<Breed> {
@@ -43,36 +34,9 @@ export default class PrismaBreedClient implements BreedRepository {
     });
 
     if (!breed) {
-      throw Error('not found');
+      throw new NotFoundError(`Not found "${this.modelName}" by name`);
     }
 
-    return Breed.toDomain(breed);
-  }
-
-  async findOneById(breedId: string): Promise<Breed> {
-    const breed = await this.prisma.client.breed.findFirst({
-      where: {
-        id: breedId,
-      },
-    });
-
-    if (!breed) {
-      throw Error('not found');
-    }
-
-    return Breed.toDomain(breed);
-  }
-
-  async updateOneById(
-    breed: Pick<BreedProps, 'id'> & Partial<Omit<BreedProps, 'petAds'>>
-  ): Promise<Breed> {
-    const updatedBreed = await this.prisma.client.breed.update({
-      where: {
-        id: breed.id,
-      },
-      data: breed,
-    });
-
-    return Breed.toDomain(updatedBreed);
+    return new Breed(breed);
   }
 }

@@ -12,11 +12,12 @@ export default class UserValidator {
       throw new ConflictError('Password is invalid');
     }
 
-    const areValidCoordinates = !!user.addresses &&  user.addresses.every(address =>
-      Address.isValidCoordinates(address.geoJSON)
-    );
-
-    if (!areValidCoordinates) {
+    if (
+      user.addresses &&
+      !user.addresses.every(address =>
+        Address.isValidCoordinates(address.geoJSON)
+      )
+    ) {
       throw new ConflictError('Invalid coordinates for user addresses');
     }
   }

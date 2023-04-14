@@ -4,11 +4,7 @@ import { ConflictError } from '@shared/application/errors/conflict.error';
 import { Address } from '@shared/domain/address.value-object';
 
 export default class PetAdValidator {
-  private breedRepository: BreedRepository;
-
-  constructor(dependencies: { breedRepository: BreedRepository }) {
-    this.breedRepository = dependencies.breedRepository;
-  }
+  constructor(private deps: { breedRepository: BreedRepository }) {}
 
   async validate(petAd: Partial<PetAdProps>) {
     if (petAd.breedIds) {
@@ -21,7 +17,7 @@ export default class PetAdValidator {
       }
 
       const breeds = await Promise.all(
-        petAd.breedIds.map(this.breedRepository.findOneById)
+        petAd.breedIds.map(this.deps.breedRepository.findOneById)
       );
 
       const hasCatBreeds = breeds.some(breed => breed?.petType === 'CAT');

@@ -13,4 +13,11 @@ export class StringUtils {
   static toCamelCase(str: string) {
     return str.replace(/[-_.]\w/g, match => match.charAt(1).toUpperCase());
   }
+
+  static toSnakeCase(str: string): string {
+    return str
+      .split(/[\s_-]+/)
+      .join('_')
+      .toLowerCase();
+  }
 }
