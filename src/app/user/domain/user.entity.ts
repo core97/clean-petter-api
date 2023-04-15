@@ -41,7 +41,7 @@ export class User extends Entity {
     };
   }
 
-  static isValidEmail(email: unknown) {
+  static isValidEmail(email: unknown): email is string {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     return typeof email === 'string' && emailRegex.test(email);
   }
@@ -52,7 +52,7 @@ export class User extends Entity {
    * - at least one capital letter
    * - at least one number
    */
-  static isValidPassword(password: unknown) {
+  static isValidPassword(password: unknown): password is string {
     const passwordRegex =
       /^(?=.*[!@#$%^&*()_+\\=[\]{};':"\\|,.<>?])(?=.*[A-Z])(?=.*[0-9]).{8,}$/gm;
 

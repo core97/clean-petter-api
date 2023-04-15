@@ -9,33 +9,17 @@ import UserPreadoptionFinder from '@user/application/user-preadoption-finder';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 
 export default class UserController extends ExpressHttpHandler {
-  private userAccountDeleter: UserAccountDeleter;
-
-  private userFinderOneByEmail: UserFinderOneByEmail;
-
-  private userSignIn: UserSignIn;
-
-  private userSignUp: UserSignUp;
-
-  private userUpdaterOneByEmail: UserUpdaterOneByEmail;
-
-  private userPreadoptionFinder: UserPreadoptionFinder;
-
-  constructor(deps: {
-    userAccountDeleter: UserAccountDeleter;
-    userFinderOneByEmail: UserFinderOneByEmail;
-    userSignIn: UserSignIn;
-    userSignUp: UserSignUp;
-    userUpdaterOneByEmail: UserUpdaterOneByEmail;
-    userPreadoptionFinder: UserPreadoptionFinder;
-  }) {
+  constructor(
+    private deps: {
+      userAccountDeleter: UserAccountDeleter;
+      userFinderOneByEmail: UserFinderOneByEmail;
+      userSignIn: UserSignIn;
+      userSignUp: UserSignUp;
+      userUpdaterOneByEmail: UserUpdaterOneByEmail;
+      userPreadoptionFinder: UserPreadoptionFinder;
+    }
+  ) {
     super();
-    this.userAccountDeleter = deps.userAccountDeleter;
-    this.userFinderOneByEmail = deps.userFinderOneByEmail;
-    this.userSignIn = deps.userSignIn;
-    this.userSignUp = deps.userSignUp;
-    this.userUpdaterOneByEmail = deps.userUpdaterOneByEmail;
-    this.userPreadoptionFinder = deps.userPreadoptionFinder;
   }
 
   async userAccountDelete(req: Request, res: Response) {
@@ -47,7 +31,7 @@ export default class UserController extends ExpressHttpHandler {
       return this.forbidden(res);
     }
 
-    await this.userAccountDeleter.run(req.params.email);
+    await this.deps.userAccountDeleter.run(req.params.email);
 
     return this.ok(res);
   }
@@ -57,7 +41,7 @@ export default class UserController extends ExpressHttpHandler {
       return this.invalidParams(res);
     }
 
-    const user = await this.userFinderOneByEmail.run(req.params.email);
+    const user = await this.deps.userFinderOneByEmail.run(req.params.email);
 
     const isSameUser = req.payload?.user?.email === user.email;
 
@@ -67,7 +51,7 @@ export default class UserController extends ExpressHttpHandler {
   }
 
   async signInPut(req: Request, res: Response) {
-    const { token, user } = await this.userSignIn.run(req.body);
+    const { token, user } = await this.deps.userSignIn.run(req.body);
 
     res.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
@@ -80,7 +64,7 @@ export default class UserController extends ExpressHttpHandler {
   }
 
   async signUpPost(req: Request, res: Response) {
-    const { token, user } = await this.userSignUp.run(req.body);
+    const { token, user } = await this.deps.userSignUp.run(req.body);
 
     res?.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
@@ -97,7 +81,7 @@ export default class UserController extends ExpressHttpHandler {
       return this.forbidden(res);
     }
 
-    const user = await this.userUpdaterOneByEmail.run({
+    const user = await this.deps.userUpdaterOneByEmail.run({
       email: req.params.email,
       ...req.body,
     });
@@ -119,7 +103,7 @@ export default class UserController extends ExpressHttpHandler {
       return this.invalidParams(res);
     }
 
-    const preadoption = await this.userPreadoptionFinder.run({
+    const preadoption = await this.deps.userPreadoptionFinder.run({
       petAd: req.params.petAdId,
       preadoptionUser: req.params.userId,
       requestingUser: req.payload.user.id,
