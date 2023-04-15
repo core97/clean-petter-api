@@ -9,11 +9,11 @@ export default class PetAdValidator {
   async validate(petAd: Partial<PetAdProps>) {
     if (petAd.breedIds) {
       if (!petAd.breedIds?.length) {
-        throw Error('breeds is empty');
+        throw new ConflictError('Breeds is empty');
       }
 
       if (petAd.breedIds.length > 2) {
-        throw Error('may not have more than two breeds');
+        throw new ConflictError('May not have more than two breeds');
       }
 
       const breeds = await Promise.all(
@@ -25,14 +25,14 @@ export default class PetAdValidator {
       const hasDogBreeds = breeds.some(breed => breed?.petType === 'DOG');
 
       if (hasCatBreeds && hasDogBreeds) {
-        throw Error('pet ad has breeds of different pets');
+        throw new ConflictError('Pet ad has breeds of different pets');
       }
 
       if (
         petAd.address?.geoJSON &&
         !Address.isValidCoordinates(petAd.address.geoJSON)
       ) {
-        throw new ConflictError('invalid coordinates for pet ad address');
+        throw new ConflictError('Invalid coordinates for pet ad address');
       }
     }
   }
