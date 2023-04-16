@@ -40,6 +40,10 @@ export class Visit extends Entity {
     this.petAdRequestId = props.petAdRequestId;
     this.type = props.type;
   }
+
+  isBelongsToVisit(userId?: string) {
+    return [this.userId, this.userIdToConfirm].some(user => user === userId);
+  }
 }
 
 export type VisitProps = ConstructorParameters<typeof Visit>[0];
