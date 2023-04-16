@@ -6,6 +6,12 @@ import { handleRequest } from '@shared/infra/server/express-handle-request';
 export const visitRouter = Router();
 
 visitRouter.get(
+  '/mine',
+  authMiddleware,
+  handleRequest<VisitController>('visitController', 'visitByUserGet')
+);
+
+visitRouter.get(
   '/:visitId',
   handleRequest<VisitController>('visitController', 'visitByIdGet')
 );

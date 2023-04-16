@@ -10,4 +10,14 @@ export default class PrismaVisitClient
   constructor(deps: { prisma: Prisma }) {
     super(Visit, 'visit', deps.prisma);
   }
+
+  async findByUser(userId: string): Promise<Visit[]> {
+    const visits = await this.prisma.client.visit.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return visits.map(visit => new Visit(visit));
+  }
 }

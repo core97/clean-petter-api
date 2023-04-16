@@ -21,6 +21,11 @@ export default class VisitService {
     return visit;
   }
 
+  async getByUser(userId: Parameters<VisitRepository['findByUser']>[0]) {
+    const visits = await this.deps.visitRepository.findByUser(userId);
+    return visits;
+  }
+
   async deleteOneById(id: Parameters<VisitRepository['deleteOneById']>[0]) {
     await this.deps.visitRepository.deleteOneById(id);
   }

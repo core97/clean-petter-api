@@ -21,6 +21,16 @@ export default class VisitController extends ExpressHttpHandler {
     return this.ok(res, visit);
   }
 
+  async visitByUserGet(req: Request, res: Response) {
+    if (!req.payload.user?.id) {
+      return this.unauthorized(res);
+    }
+
+    const visits = await this.deps.visitService.getByUser(req.payload.user.id);
+
+    return this.ok(res, visits);
+  }
+
   async visitByIdDelete(req: Request, res: Response) {
     if (!req.params.visitId) {
       return this.invalidParams(res);
