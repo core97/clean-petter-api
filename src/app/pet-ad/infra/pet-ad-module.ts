@@ -11,6 +11,13 @@ export const petAdModules = awilix.listModules(
         lifetime: awilix.Lifetime.SINGLETON,
       },
     ],
+    [
+      'infra/pet-ad-controller.ts',
+      {
+        register: awilix.asClass,
+        lifetime: awilix.Lifetime.SINGLETON,
+      },
+    ],
   ],
   {
     cwd: 'src/app/pet-ad',

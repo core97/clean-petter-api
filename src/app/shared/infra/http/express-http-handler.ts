@@ -51,4 +51,12 @@ export abstract class ExpressHttpHandler {
       ...(error && { message: error.toString() }),
     });
   }
+
+  protected parseQueryString(queryString?: unknown): string[] {
+    if (!queryString) return [];
+
+    return Array.isArray(queryString)
+      ? queryString
+      : [queryString].filter(Boolean);
+  }
 }

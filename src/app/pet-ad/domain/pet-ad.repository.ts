@@ -1,5 +1,5 @@
 import { PetAd, PetAdProps } from '@pet-ad/domain/pet-ad.entity';
-import { PetAdSortOptions } from '@pet-ad/domain/types/pet-ad-sort-options';
+import { PetAdSortOption } from '@pet-ad/domain/types/pet-ad-sort-options';
 import { User } from '@user/domain/user.entity';
 import { CountryIso } from '@shared/domain/types/country';
 import { PetType } from '@shared/domain/types/pet-type';
@@ -16,7 +16,7 @@ export interface PetAdRepository extends Repository<PetAd, PetAdProps> {
     filters: Partial<Pick<PetAd, 'breedIds'>> & {
       country: CountryIso;
       petType: PetType;
-      sortBy?: PetAdSortOptions;
+      sortBy?: PetAdSortOption;
       pagination?: PaginationParams;
     }
   ): Promise<PaginationResult<PetAd>>;

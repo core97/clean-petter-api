@@ -1,7 +1,7 @@
 import { Prisma as PrismaClient } from '@prisma/client';
 import { PetAdRepository } from '@pet-ad/domain/pet-ad.repository';
 import { PetAd, PetAdProps } from '@pet-ad/domain/pet-ad.entity';
-import { PetAdSortOptions } from '@pet-ad/domain/types/pet-ad-sort-options';
+import { PetAdSortOption } from '@pet-ad/domain/types/pet-ad-sort-options';
 import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { CountryIso } from '@shared/domain/types/country';
 import { PetType } from '@shared/domain/types/pet-type';
@@ -32,7 +32,7 @@ export default class PrismaPetAdRepository
       country: CountryIso;
       petType: PetType;
       pagination?: PaginationParams;
-      sortBy?: PetAdSortOptions;
+      sortBy?: PetAdSortOption;
     }
   ): Promise<PaginationResult<PetAd>> {
     const whereFilter: PrismaClient.PetAdWhereInput = {
@@ -53,14 +53,14 @@ export default class PrismaPetAdRepository
       }),
     };
 
-    const sortFilter: Record<PetAdSortOptions, Record<string, string>> = {
-      [PetAdSortOptions.CREATED_AT_ASC]: {
+    const sortFilter: Record<PetAdSortOption, Record<string, string>> = {
+      created_at_asc: {
         createdAt: 'asc',
       },
-      [PetAdSortOptions.CREATED_AT_DESC]: {
+      created_at_desc: {
         createdAt: 'desc',
       },
-      [PetAdSortOptions.RELEVANCE]: {
+      relevance: {
         createdAt: 'asc',
         dateBirth: 'dec',
       },
