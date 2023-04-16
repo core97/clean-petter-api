@@ -34,7 +34,7 @@ export default class UserPreadoptionFinder {
     );
 
     const requestFromUser = petAdRequests.find(
-      request => request.interestedUserId === params.preadoptionUser
+      request => request.userId === params.preadoptionUser
     );
 
     if (!requestFromUser) {
@@ -42,7 +42,7 @@ export default class UserPreadoptionFinder {
     }
 
     const user = await this.deps.userRepository.findOneById(
-      requestFromUser.interestedUserId
+      requestFromUser.userId
     );
 
     if (!user.preadoption) {

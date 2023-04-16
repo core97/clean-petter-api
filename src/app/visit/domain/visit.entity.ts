@@ -1,4 +1,5 @@
 import { VisitStatus } from '@visit/domain/types/visit-status';
+import { VisitType } from '@visit/domain/types/visit-type';
 import { Entity } from '@shared/domain/types/entity';
 import { Address, AddressProps } from '@shared/domain/address.value-object';
 
@@ -15,6 +16,8 @@ export class Visit extends Entity {
 
   petAdRequestId: string;
 
+  type: VisitType;
+
   constructor(
     props: Pick<
       Visit,
@@ -23,6 +26,7 @@ export class Visit extends Entity {
       | 'date'
       | 'petAdRequestId'
       | 'status'
+      | 'type'
       | 'userId'
       | 'userIdToConfirm'
     > & { address: AddressProps }
@@ -34,6 +38,7 @@ export class Visit extends Entity {
     this.date = props.date;
     this.userIdToConfirm = props.userIdToConfirm;
     this.petAdRequestId = props.petAdRequestId;
+    this.type = props.type;
   }
 }
 

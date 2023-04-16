@@ -32,8 +32,8 @@ model PetAd {
 model PetAdRequest {
   id               String        @id @default(auto()) @map("_id") @db.ObjectId
   createdAt        DateTime      @default(now())
-  interestedUser   User          @relation(fields: [interestedUserId], references: [id])
-  interestedUserId String        @db.ObjectId
+  user   User          @relation(fields: [userId], references: [id])
+  userId String        @db.ObjectId
   petAd            PetAd         @relation(fields: [petAdId], references: [id])
   petAdId          String        @db.ObjectId
   status           RequestStatus
@@ -64,6 +64,7 @@ model Visit {
   userIdToConfirm String       @db.ObjectId
   petAdRequest    PetAdRequest @relation(fields: [petAdRequestId], references: [id])
   petAdRequestId  String       @db.ObjectId
+  type            VisitType
 }
 
 type Address {
@@ -105,4 +106,9 @@ enum RequestStatus {
 enum VisitStatus {
   PENDING
   CONFIRMED
+}
+
+enum VisitType {
+  VISIT_NEXT_HOME
+  VISIT_PET
 }

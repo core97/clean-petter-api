@@ -2,7 +2,7 @@ import { RequestStatus } from '@pet-ad-request/domain/types/request-status';
 import { Entity } from '@shared/domain/types/entity';
 
 export class PetAdRequest extends Entity {
-  interestedUserId: string;
+  userId: string;
 
   petAdId: string;
 
@@ -11,11 +11,11 @@ export class PetAdRequest extends Entity {
   constructor(
     props: Pick<
       PetAdRequest,
-      'id' | 'createdAt' | 'interestedUserId' | 'petAdId' | 'status'
+      'id' | 'createdAt' | 'userId' | 'petAdId' | 'status'
     >
   ) {
     super(props);
-    this.interestedUserId = props.interestedUserId;
+    this.userId = props.userId;
     this.petAdId = props.petAdId;
     this.status = props.status;
   }
