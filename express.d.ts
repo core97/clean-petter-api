@@ -1,4 +1,5 @@
 import { AwilixContainer } from 'awilix';
+import formidable from 'formidable';
 
 declare global {
   namespace Express {
@@ -10,6 +11,7 @@ declare global {
           id: string;
         };
       };
+      files?: formidable.File[];
     }
   }
 }
