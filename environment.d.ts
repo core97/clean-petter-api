@@ -4,6 +4,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       AUTH_COOKIE_NAME: string;
+      CLOUDINARY_NAME: string;
+      CLOUDINARY_API_KEY: string;
+      CLOUDINARY_API_SECRET: string;
       DATABASE_URL: string;
       MY_SECRET_AUTH_TOKEN: string;
       NODE_ENV: 'production' | 'development' | 'test';

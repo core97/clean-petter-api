@@ -7,6 +7,7 @@ import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { PinoLogger } from '@shared/infra/logger/pino-logger';
 import { SentryTracker } from '@shared/infra/tracker/sentry-tracker';
 import { ThirdParties } from '@shared/infra/third-parties';
+import { Cloudinary } from '@shared/infra/storage/cloudinary';
 
 /* Business modules */
 import { breedModules } from '@breed/infra/breed-module';
@@ -25,6 +26,7 @@ export const setUpDependencies = () => {
     cryptographic: awilix.asClass(Bcrypt),
     prisma: awilix.asClass(Prisma).singleton(),
     tracker: awilix.asClass(SentryTracker).singleton(),
+    storage: awilix.asClass(Cloudinary).singleton(),
     fetcher: awilix.asClass(Fetcher),
     thirdParties: awilix.asClass(ThirdParties),
     logger: awilix.asClass(PinoLogger).inject(() => ({
