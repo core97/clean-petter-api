@@ -7,7 +7,10 @@ import { Prisma } from '@shared/infra/persistence/prisma-client';
 import { PinoLogger } from '@shared/infra/logger/pino-logger';
 import { SentryTracker } from '@shared/infra/tracker/sentry-tracker';
 import { ThirdParties } from '@shared/infra/third-parties';
-import { Cloudinary } from '@shared/infra/storage/cloudinary';
+import { Cloudinary } from '@shared/infra/media-storage/cloudinary';
+
+/* Infrastructure controllers */
+import MediaStorageController from '@shared/infra/controllers/media-storage-controller';
 
 /* Business modules */
 import { breedModules } from '@breed/infra/breed-module';
@@ -22,11 +25,12 @@ export const container = awilix.createContainer({
 
 export const setUpDependencies = () => {
   container.register({
+    /* Application */
     authentication: awilix.asClass(JsonWebToken),
     cryptographic: awilix.asClass(Bcrypt),
     prisma: awilix.asClass(Prisma).singleton(),
     tracker: awilix.asClass(SentryTracker).singleton(),
-    storage: awilix.asClass(Cloudinary).singleton(),
+    mediaStorage: awilix.asClass(Cloudinary).singleton(),
     fetcher: awilix.asClass(Fetcher),
     thirdParties: awilix.asClass(ThirdParties),
     logger: awilix.asClass(PinoLogger).inject(() => ({
@@ -36,6 +40,9 @@ export const setUpDependencies = () => {
       method: null,
       url: null,
     })),
+
+    /* Infrastructure controllers */
+    mediaStorageController: awilix.asClass(MediaStorageController).singleton(),
   });
 
   container.loadModules(

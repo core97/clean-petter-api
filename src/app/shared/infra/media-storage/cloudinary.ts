@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
+import { FileStoraged } from '@shared/domain/file-storaged.value-object';
 import { Logger } from '@shared/application/logger';
+import { MediaStorage } from '@shared/application/media-storage';
 
 /**
  * Documentation
@@ -10,8 +12,10 @@ import { Logger } from '@shared/application/logger';
  * @see https://cloudinary.com/documentation/image_optimization
  */
 
-export class Cloudinary {
+export class Cloudinary extends MediaStorage {
   constructor(private deps: { logger: Logger }) {
+    super();
+
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -26,10 +30,13 @@ export class Cloudinary {
     });
 
     this.deps.logger.info(
-      `Uploaded file with ${uploadResponse.public_id} publicId: ${uploadResponse.url}`
+      `Uploaded file with "${uploadResponse.public_id}" publicId: ${uploadResponse.url}`
     );
 
-    return uploadResponse;
+    return new FileStoraged({
+      publicId: uploadResponse.public_id,
+      url: uploadResponse.url,
+    });
   }
 
   async deleteFile(publicId: string) {

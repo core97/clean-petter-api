@@ -3,9 +3,8 @@ import cookieParser from 'cookie-parser';
 import { userRouter } from '@user/infra/user-router';
 import { petAdRouter } from '@pet-ad/infra/pet-ad-router';
 import { visitRouter } from '@visit/infra/visit-router';
+import { mediaStorageRouter } from '@shared/infra/router/media-storage-router';
 import { containerScopeMiddleware } from '@shared/infra/middleware/container-scope-middleware';
-import { filesMiddleware } from '@shared/infra/middleware/files-middleware';
-import { authMiddleware } from '@shared/infra/middleware/auth-middleware';
 import { sentryScopeMiddleware } from '@shared/infra/middleware/sentry-scope-middleware';
 import { globalErrorMiddleware } from '@shared/infra/middleware/global-error-middleware';
 
@@ -20,13 +19,7 @@ export const initializeServer = () => {
 
   app.use(sentryScopeMiddleware);
 
-  app.post('/api/files', authMiddleware, filesMiddleware, (req, res) => {
-    req.files?.forEach(file => {
-      console.log(`${file.originalFilename} - ${file.size}`);
-    });
-
-    return res.status(200).end();
-  });
+  app.use('/api/media-storage', mediaStorageRouter);
 
   app.use('/api/pet-ads', petAdRouter);
 

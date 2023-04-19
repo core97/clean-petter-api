@@ -46,6 +46,10 @@ export abstract class ExpressHttpHandler {
     return this.jsonResponse(res, HttpStatus.UNPROCESSABLE_ENTITY, message);
   }
 
+  protected contentTooLarge(res: Response, message?: string) {
+    return this.jsonResponse(res, HttpStatus.CONTENT_TOO_LARGE, message);
+  }
+
   protected fail(res: Response, error?: Error | string) {
     return res.status(HttpStatus.INTERNAL_ERROR).json({
       ...(error && { message: error.toString() }),
