@@ -3,6 +3,11 @@ import { BreedRepository } from '@breed/domain/breed.repository';
 import { ConflictError } from '@shared/application/errors/conflict.error';
 import { Address } from '@shared/domain/address.value-object';
 
+const IMAGES_PER_AD = {
+  MAX: 4,
+  MIN: 1,
+};
+
 export default class PetAdValidator {
   constructor(private deps: { breedRepository: BreedRepository }) {}
 
@@ -27,13 +32,23 @@ export default class PetAdValidator {
       if (hasCatBreeds && hasDogBreeds) {
         throw new ConflictError('Pet ad has breeds of different pets');
       }
+    }
 
-      if (
-        petAd.address?.geoJSON &&
-        !Address.isValidCoordinates(petAd.address.geoJSON)
-      ) {
-        throw new ConflictError('Invalid coordinates for pet ad address');
-      }
+    if (
+      petAd.images &&
+      petAd.images.length <= IMAGES_PER_AD.MIN &&
+      petAd.images.length > IMAGES_PER_AD.MAX
+    ) {
+      throw new ConflictError(
+        `Pet ad cannot have more than ${IMAGES_PER_AD} images`
+      );
+    }
+
+    if (
+      petAd.address?.geoJSON &&
+      !Address.isValidCoordinates(petAd.address.geoJSON)
+    ) {
+      throw new ConflictError('Invalid coordinates for pet ad address');
     }
   }
 }

@@ -1,10 +1,18 @@
 import { BreedRepository } from '@breed/domain/breed.repository';
+import BreedValidator from '@breed/application/breed-validator';
 import { StringUtils } from '@shared/application/string-utils';
 
 export default class BreedService {
-  constructor(private deps: { breedRepository: BreedRepository }) {}
+  constructor(
+    private deps: {
+      breedRepository: BreedRepository;
+      breedValidator: BreedValidator;
+    }
+  ) {}
 
   async create(breed: Parameters<BreedRepository['create']>[0]) {
+    this.deps.breedValidator.validate(breed);
+
     const breedCreated = await this.deps.breedRepository.create({
       ...breed,
       name: StringUtils.toSnakeCase(breed.name).toUpperCase(),
@@ -41,6 +49,8 @@ export default class BreedService {
   }
 
   async updateOneById(breed: Parameters<BreedRepository['updateOneById']>[0]) {
+    this.deps.breedValidator.validate(breed);
+
     const updatedBreed = await this.deps.breedRepository.updateOneById({
       ...breed,
       ...(breed.name && {

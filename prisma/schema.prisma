@@ -11,6 +11,7 @@ model Breed {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
   createdAt DateTime @default(now())
+  images    FileStoraged[]
   petAds    PetAd[]  @relation(fields: [petAdsId], references: [id])
   petAdsId  String[] @db.ObjectId
   petType   PetType
@@ -23,6 +24,7 @@ model PetAd {
   breedIds  String[]       @db.ObjectId
   createdAt DateTime       @default(now())
   dateBirth DateTime
+  images    FileStoraged[]
   name      String
   user      User           @relation(fields: [userId], references: [id])
   userId    String         @db.ObjectId
@@ -30,14 +32,14 @@ model PetAd {
 }
 
 model PetAdRequest {
-  id               String        @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt        DateTime      @default(now())
-  user   User          @relation(fields: [userId], references: [id])
-  userId String        @db.ObjectId
-  petAd            PetAd         @relation(fields: [petAdId], references: [id])
-  petAdId          String        @db.ObjectId
-  status           RequestStatus
-  visits           Visit[]
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime      @default(now())
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String        @db.ObjectId
+  petAd     PetAd         @relation(fields: [petAdId], references: [id])
+  petAdId   String        @db.ObjectId
+  status    RequestStatus
+  visits    Visit[]
 }
 
 model User {
@@ -76,6 +78,11 @@ type Address {
   postalCode   Int
   url          String?
   streetNumber String?
+}
+
+type FileStoraged {
+  publicId String
+  url      String
 }
 
 type GeoJSON {

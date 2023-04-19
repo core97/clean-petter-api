@@ -1,7 +1,13 @@
 import { Entity } from '@shared/domain/types/entity';
 import { PetType } from '@shared/domain/types/pet-type';
+import {
+  FileStoraged,
+  FileStoragedProps,
+} from '@shared/domain/file-storaged.value-object';
 
 export class Breed extends Entity {
+  images: FileStoraged[];
+
   name: string;
 
   petType: PetType;
@@ -9,9 +15,12 @@ export class Breed extends Entity {
   petAdsId: string[];
 
   constructor(
-    props: Pick<Breed, 'id' | 'createdAt' | 'name' | 'petAdsId' | 'petType'>
+    props: Pick<Breed, 'id' | 'createdAt' | 'name' | 'petAdsId' | 'petType'> & {
+      images: FileStoragedProps[];
+    }
   ) {
     super(props);
+    this.images = props.images.map(img => new FileStoraged(img));
     this.name = props.name;
     this.petType = props.petType;
     this.petAdsId = props.petAdsId;
