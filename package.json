@@ -1,5 +1,5 @@
 {
-  "name": "clean-petter-api",
+  "name": "pet-ad-adoption-api",
   "version": "1.0.0",
   "description": "",
   "main": "src/app/index.ts",
