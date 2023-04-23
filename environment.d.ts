@@ -14,6 +14,7 @@ declare global {
       SENTRY_DNS: string;
       SENTRY_SERVER_NAME: string;
       TYPEFORM_SECRET : string;
+      WEB_DOMAIN : string;
     }
   }
 }

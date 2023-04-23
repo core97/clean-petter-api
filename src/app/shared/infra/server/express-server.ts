@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import { userRouter } from '@user/infra/user-router';
 import { petAdRouter } from '@pet-ad/infra/pet-ad-router';
 import { visitRouter } from '@visit/infra/visit-router';
@@ -10,6 +11,13 @@ import { globalErrorMiddleware } from '@shared/infra/middleware/global-error-mid
 
 export const initializeServer = () => {
   const app = express();
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: process.env.WEB_DOMAIN,
+    })
+  );
 
   app.use(cookieParser());
 
