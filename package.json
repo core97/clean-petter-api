@@ -1,5 +1,5 @@
 {
-  "name": "pet-ad-adoption-api",
+  "name": "pet-adoption-api",
   "version": "1.0.0",
   "description": "",
   "main": "src/app/index.ts",
