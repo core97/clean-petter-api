@@ -6,6 +6,11 @@ import { handleRequest } from '@shared/infra/server/express-handle-request';
 export const userRouter = Router();
 
 userRouter.get(
+  '/session/:sessionToken',
+  handleRequest<UserController>('userController', 'userBySessionGet')
+);
+
+userRouter.get(
   '/:email',
   authMiddleware,
   handleRequest<UserController>('userController', 'userByEmailGet')

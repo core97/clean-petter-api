@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import dayjs from 'dayjs';
 import { User } from '@user/domain/user.entity';
 import UserAccountDeleter from '@user/application/user-account-deleter';
 import UserFinderOneByEmail from '@user/application/user-finder-one-by-email';
@@ -7,6 +8,8 @@ import UserSignUp from '@user/application/user-sign-up';
 import UserUpdaterOneByEmail from '@user/application/user-updater-one-by-email';
 import UserPreadoptionFinder from '@user/application/user-preadoption-finder';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
+import { Logger } from '@shared/application/logger';
+import { Authentication } from '@shared/application/authentication';
 
 export default class UserController extends ExpressHttpHandler {
   constructor(
@@ -17,6 +20,8 @@ export default class UserController extends ExpressHttpHandler {
       userSignUp: UserSignUp;
       userUpdaterOneByEmail: UserUpdaterOneByEmail;
       userPreadoptionFinder: UserPreadoptionFinder;
+      authentication: Authentication;
+      logger: Logger;
     }
   ) {
     super();
@@ -50,13 +55,31 @@ export default class UserController extends ExpressHttpHandler {
     return this.ok(res, userDto);
   }
 
+  async userBySessionGet(req: Request, res: Response) {
+    let userDto: ReturnType<User['getPublicData']> | null = null;
+
+    if (!req.params.sessionToken) {
+      return this.invalidParams(res);
+    }
+
+    const { email } = this.deps.authentication.validateAuthToken(
+      req.params.sessionToken
+    );
+
+    const user = await this.deps.userFinderOneByEmail.run(email);
+
+    userDto = user.getPublicData(true);
+
+    return this.ok(res, userDto);
+  }
+
   async signInPut(req: Request, res: Response) {
     const { token, user } = await this.deps.userSignIn.run(req.body);
 
     res.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // one week
+      expires: dayjs().add(1, 'week').toDate(),
       httpOnly: true,
     });
 
@@ -66,10 +89,10 @@ export default class UserController extends ExpressHttpHandler {
   async signUpPost(req: Request, res: Response) {
     const { token, user } = await this.deps.userSignUp.run(req.body);
 
-    res?.cookie(process.env.AUTH_COOKIE_NAME, token, {
+    res.cookie(process.env.AUTH_COOKIE_NAME, token, {
       path: '/',
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // one week
+      expires: dayjs().add(1, 'week').toDate(),
       httpOnly: true,
     });
 
