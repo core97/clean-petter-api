@@ -19,6 +19,7 @@ export class JsonWebToken extends Authentication {
       const payload: AutTokenPayload = {
         email: decodedToken.email,
         id: decodedToken.id,
+        role: decodedToken.role,
       };
 
       return payload;
@@ -27,8 +28,8 @@ export class JsonWebToken extends Authentication {
     }
   }
 
-  createAuthToken({ email, id }: AutTokenPayload): string {
-    const payloadForToken = { id, email };
+  createAuthToken({ email, id, role }: AutTokenPayload): string {
+    const payloadForToken = { id, email, role };
 
     const token = sign(payloadForToken, process.env.MY_SECRET_AUTH_TOKEN, {
       expiresIn: 60 * 60 * 24 * 7, // One week

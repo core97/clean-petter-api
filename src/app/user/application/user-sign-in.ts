@@ -29,6 +29,7 @@ export default class UserSignIn {
       const token = this.deps.authentication.createAuthToken({
         email: userFound.email,
         id: userFound.id,
+        role: userFound.role,
       });
 
       return { user: userFound, token };

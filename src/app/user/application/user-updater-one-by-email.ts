@@ -47,8 +47,10 @@ export default class UserUpdaterOneByEmail {
       }
     }
 
+    const { role, ...rest } = user;
+
     const updatedUser = await this.deps.userRepository.updateOneByEmail({
-      ...user,
+      ...rest,
       ...(user.name && { name: StringUtils.capitalizeWords(user.name) }),
       ...(newPasswordEncrypted && { password: newPasswordEncrypted }),
     });

@@ -33,6 +33,7 @@ export default class UserSignUp {
           ...user,
           name: StringUtils.capitalizeWords(user.name),
           password: passwordEncrypted,
+          role: 'USER',
         });
 
         const userAndToken = await this.deps.userSignIn.run({

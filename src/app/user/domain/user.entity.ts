@@ -1,3 +1,4 @@
+import { UserRole } from '@user/domain/types/user-role';
 import { Address, AddressProps } from '@shared/domain/address.value-object';
 import { Entity } from '@shared/domain/types/entity';
 import { Nullable } from '@shared/domain/types/type-utils';
@@ -16,10 +17,18 @@ export class User extends Entity {
     responseId: string;
   }>;
 
+  role: UserRole;
+
   constructor(
     props: Pick<
       User,
-      'id' | 'createdAt' | 'email' | 'name' | 'password' | 'preadoption'
+      | 'id'
+      | 'createdAt'
+      | 'email'
+      | 'name'
+      | 'password'
+      | 'preadoption'
+      | 'role'
     > & {
       addresses: AddressProps[];
     }
@@ -30,10 +39,11 @@ export class User extends Entity {
     this.password = props.password;
     this.addresses = props.addresses.map(address => new Address(address));
     this.preadoption = props.preadoption;
+    this.role = props.role;
   }
 
   getPublicData(isSameUser?: boolean) {
-    const { password, addresses, ...rest } = this;
+    const { password, addresses, role, ...rest } = this;
 
     return {
       ...rest,

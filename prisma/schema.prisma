@@ -8,12 +8,12 @@ datasource db {
 }
 
 model Breed {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @unique
-  createdAt DateTime @default(now())
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  name      String         @unique
+  createdAt DateTime       @default(now())
   images    FileStoraged[]
-  petAds    PetAd[]  @relation(fields: [petAdsId], references: [id])
-  petAdsId  String[] @db.ObjectId
+  petAds    PetAd[]        @relation(fields: [petAdsId], references: [id])
+  petAdsId  String[]       @db.ObjectId
   petType   PetType
 }
 
@@ -38,7 +38,7 @@ model PetAdRequest {
   userId    String        @db.ObjectId
   petAd     PetAd         @relation(fields: [petAdId], references: [id])
   petAdId   String        @db.ObjectId
-  status    RequestStatus
+  status    RequestStatus @default(PENDING)
   visits    Visit[]
 }
 
@@ -53,6 +53,7 @@ model User {
   preadoption  Preadoption?
   visits       Visit[]
   petAdRequest PetAdRequest[]
+  role         Role           @default(USER)
 }
 
 model Visit {
@@ -108,6 +109,11 @@ enum RequestStatus {
   ACCEPTED
   PENDING
   REJECTED
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 enum VisitStatus {

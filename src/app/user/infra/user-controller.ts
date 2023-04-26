@@ -10,6 +10,7 @@ import UserPreadoptionFinder from '@user/application/user-preadoption-finder';
 import { ExpressHttpHandler } from '@shared/infra/http/express-http-handler';
 import { Logger } from '@shared/application/logger';
 import { Authentication } from '@shared/application/authentication';
+import { ForbiddenError } from '@shared/application/errors/forbidden.error';
 
 export default class UserController extends ExpressHttpHandler {
   constructor(
@@ -62,15 +63,19 @@ export default class UserController extends ExpressHttpHandler {
       return this.invalidParams(res);
     }
 
-    const { email } = this.deps.authentication.validateAuthToken(
+    const { email, role } = this.deps.authentication.validateAuthToken(
       req.params.sessionToken
     );
 
     const user = await this.deps.userFinderOneByEmail.run(email);
 
+    if (user.role !== role) {
+      throw new ForbiddenError();
+    }
+
     userDto = user.getPublicData(true);
 
-    return this.ok(res, userDto);
+    return this.ok(res, { ...userDto, role });
   }
 
   async signInPut(req: Request, res: Response) {
