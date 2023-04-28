@@ -28,8 +28,8 @@ export default class BreedService {
     await this.deps.breedRepository.deleteOneById(breedId);
   }
 
-  async getByPetType(petType: Parameters<BreedRepository['findByPetType']>[0]) {
-    const breeds = await this.deps.breedRepository.findByPetType(petType);
+  async getByPetType(params: Parameters<BreedRepository['findByPetType']>[0]) {
+    const breeds = await this.deps.breedRepository.findByPetType(params);
 
     return breeds;
   }

@@ -27,6 +27,8 @@ export const initializeServer = () => {
 
   app.use(sentryScopeMiddleware);
 
+  app.use('/api/breeds', mediaStorageRouter);
+
   app.use('/api/media-storage', mediaStorageRouter);
 
   app.use('/api/pet-ads', petAdRouter);
